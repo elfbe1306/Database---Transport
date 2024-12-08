@@ -1,12 +1,17 @@
-import './App.css'
-import supabase from './supabase-client'
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import { Login } from "./Pages/Login";
+import { DashBoard } from "./Pages/DashBoard";
 
 function App() {
-  return (
-    <>
-      
-    </>
-  )
+  return(
+    <div>
+      <Routes>
+        <Route path="/" element={<Login/>}/>
+        <Route path="/dashboard" element={<DashBoard/>}/>
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;
