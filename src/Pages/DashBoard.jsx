@@ -65,15 +65,15 @@ export const DashBoard = () => {
             <div className={styles.assign_container}>
               <div className={styles.assign_header}>ASSIGN</div>
               <div className={`${styles.input_box} ${styles.driver_box}`}></div>
-              <div className="input-box time-box"></div>
-              <div className="arrow-icon time-arrow"></div>
-              <div className="input-box note-box"></div>
-              <div className="arrow-icon driver-arrow"></div>
-              <div className="label driver-label">Driver</div>
-              <div className="label time-label">Time</div>
-              <div className="label note-label">Note <br />(if needed)</div>
-              <div className="save-button"></div>
-              <div className="save-text" onClick={toggleAssignContainer}>Save</div>
+              <div className={`${styles.input_box} ${styles.time_box}`}></div>
+              <div className={`${styles.arrow_icon} ${styles.time_arrow}`}></div>
+              <div className={`${styles.input_box} ${styles.note_box}`}></div>
+              <div className={`${styles.arrow_icon} ${styles.driver_arrow}`}></div>
+              <div className={`${styles.label} ${styles.driver_label}`}>Driver</div>
+              <div className={`${styles.label} ${styles.time_label}`}>Time</div>
+              <div className={`${styles.label} ${styles.note_label}`}>Note <br />(if needed)</div>
+              <div className={styles.save_button}></div>
+              <div className={styles.save_text} onClick={toggleAssignContainer}>Save</div>
             </div>
         </div>
       )}
