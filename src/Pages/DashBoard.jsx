@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-// import supabase from '../supabase-client'
-import { Header } from '../components/Header'
+import React, { useEffect } from 'react';
+// import supabase from '../supabase-client';
+import { Header } from '../components/Header';
 import { InfoBlock } from '../components/DashBoard_Components/InfoBlock';
-import styles from '../Styles/DashBoard_Styles/DashBoard.module.css'
+import styles from '../Styles/DashBoard_Styles/DashBoard.module.css';
 
 export const DashBoard = () => {
   const productData = [
