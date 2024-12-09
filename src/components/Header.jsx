@@ -1,16 +1,17 @@
 import React from 'react'
 import styles from '../Styles/Header.module.css'
+import {Link} from 'react-router-dom';
 
 export const Header = () => {
   return (
     <div className={styles.Header}>
       <div className={styles.Navi}>
-        <div className={styles.NaviText}>Dashboard</div>
-        <div className={styles.NaviText}>Products</div>
-        <div className={styles.NaviText}>Export</div>
-        <div className={styles.NaviText}>Branch</div>
-        <div className={styles.NaviText}>Stock</div>
-        <div className={styles.NaviText}>Report</div>
+        <Link to="/dashboard" className={styles.NaviText}>Dashboard</Link>
+        <Link to="/dashboard/product" className={styles.NaviText}>Products</Link>
+        <Link to="" className={styles.NaviText}>Export</Link>
+        <Link to="" className={styles.NaviText}>Branch</Link>
+        <Link to="" className={styles.NaviText}>Stock</Link>
+        <Link to="" className={styles.NaviText}>Report</Link>
       </div>
     </div>
   )
