@@ -34,8 +34,7 @@ body{
     height: 758px;
     justify-self:center;
     margin-top: 2%;
-    padding-top: 30px;
-    padding-left: 40px;
+    
     border-radius: 8px;
     background: #FFF;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -56,7 +55,10 @@ body{
     box-sizing: border-box;
     position: relative;
     justify-content: space-between;
-    padding-inline: 20px;
+    padding-top: 30px;
+    padding-left: 40px;
+    padding-bottom: 12px;
+    /* //padding-inline: 20px; */
     border-bottom: #4A628A;
     border-bottom: 10 px;
 }
@@ -91,36 +93,50 @@ body{
     height: 0;
     position: absolute;
     border: 1.5px #f0f0f0 solid;
-    margin-top: 0.6%;
+    /* margin-top: 0.6%; */
 }
 
 .table-wrapper{
-    margin: 1%;
+    /* margin: 1%; */
     overflow-x: auto;
+    
 }
 
 .product-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
+    gap: 10px;
   }
   
   
-  .product-table th,
-  .product-table td {
-    padding: 8px;
-  }
   
-  .product-table th {
+  .product-table thead {
+   padding: 10px;
+   
+  }
+  .product-table th{
    font-family: Roboto;
+   font-size: 20px;
+   text-align: center;
+   color: #4A628A;
+   padding: 10px;
   }
 
-  .product-table tbody {
+  .product-table tbody{
+    padding: 8px;
+  }
+  .product-table td {
     color: #000;
+    padding: 10px;
     text-align: center;
     font-family: Roboto;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 24px; /* 171.429% */
+  }
+  .product-table .tbody .tr
+  {
+    margin: 10px;
   }

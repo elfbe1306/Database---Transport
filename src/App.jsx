@@ -42,20 +42,21 @@ function App() {
                 <th>Time Left</th>
                 <th>Imported Date</th>
                 <th>Exported Date</th>
-                <th>Actions</th>
               </tr>
             </thead>
+
+            <div className="divider"></div>
+
             <tbody>
               <tr>
                 <td>MP0001</td>
-                <td>Sữa Rửa Mặt CeraVe Sạch Sâu Cho Da Thường Đến Da Dầu 473ml</td>
+                <td>Sữa Rửa Mặt CeraVe Sạch Sâu Cho Da Thường Đến Da Dầu 473ml </td>
                 <td>100</td>
                 <td>Sữa rửa mặt</td>
                 <td>20-08-2024</td>
                 <td>09-12-2026</td>
                 <td className="time-left">2 year</td>
                 <td>08-09-2024</td>
-                <td>NULL</td>
                 <td className="actions">
                   <button className="edit-button">✏️</button>
                   <button className="delete-button">❌</button>
