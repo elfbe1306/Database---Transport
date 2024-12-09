@@ -53,7 +53,7 @@ export const Login = () => {
             <p className={styles.ForgotPasswordText}>Forgot Password?</p>
 
           </form>
-          <button className={styles.ContinueButton}>Log In</button>
+          <button className={styles.ContinueButton} onClick={login}>Log In</button>
 
           {errorMessage && <p className={styles.errorText}>{errorMessage}</p>}
         </div>

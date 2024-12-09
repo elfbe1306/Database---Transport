@@ -9,7 +9,7 @@ export const InfoBlock = ({ title, data, headerColor }) => {
         <span className={styles.info_view_all}>View All</span>
       </div>
       <div className={styles.info_data}>
-        {data.map((item, index) => (
+        {data?.map((item, index) => (
           <div className={styles.info_item} key={index}>
             <div className={styles.info_indicator} style={{ backgroundColor: item.color }} />
             <div className={styles.info_text}>
