@@ -7,7 +7,7 @@ import { TableComponent } from '../components/DashBoard_Components/TableComponen
 
 export const DashBoard = () => {
   const productData = [
-    { label: 'AVAILABLE', value: 4000, color: '#4096FF' },
+    { label: 'AVAILABLE', value: 100, color: '#4096FF' },
     { label: 'EXPIRED PRODUCTS', value: 100, color: '#DC4446' },
   ];
 
