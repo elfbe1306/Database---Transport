@@ -1,0 +1,10 @@
+.wrapper{
+  display: flex;
+  max-width: 1440px;
+  width: 100%;
+  position: absolute;
+  padding: 10px 5px;
+  top: 155px;
+  left: 30px;
+  gap: 465px;
+}
