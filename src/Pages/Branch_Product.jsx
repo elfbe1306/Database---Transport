@@ -1,16 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Header } from '../components/Header'
 import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Branch_Product.module.css'
+import { useParams } from 'react-router-dom';
+import supabase from '../supabase-client';
 
 export const Branch_Product = () => {
+  const {branch_id} = useParams();
+  const [branchName, setBranchName] = useState('');
+
+  useEffect(()=> {
+    fetchBranchName();
+  }, [])
+
+  const fetchBranchName = async () => {
+    const {data, error} = await supabase.rpc('retrieve_warehouse_name', {branch_id});
+    if(error) {
+      console.error('Error fetching name:', error);
+    } else {
+      setBranchName(data);
+    }
+  }
 
   return (
     <div >
       <Header></Header>
       <div className={styles.Content}>
         <div className={styles.Wrapper}>
-        <div className={styles.TableName}>[NAME]'S PRODUCT</div>
+        <div className={styles.TableName}>{branchName}'s PRODUCT</div>
         <div className={styles.ActionButton}>
           <button className={styles.Restock}>Restock</button>
           <div className={styles.search_input_box}>
