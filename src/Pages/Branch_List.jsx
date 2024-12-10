@@ -80,7 +80,7 @@ export const Branch_List = () => {
               {warehouses.map((house) => (
                 <tr key={house.w_id}>
                   <td>{house.w_id}</td>
-                  <td><Link to={`/dashboard/branch-product/${house.w_id}`}>{house.w_name}</Link></td>
+                  <td><Link to={`/dashboard/branch-product/${house.w_id}`} className={styles.Link}>{house.w_name}</Link></td>
                   <td>{house.w_location}</td>
                   <td>{house.w_area}</td>
                   <td>{house.w_email}</td>

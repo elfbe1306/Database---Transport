@@ -286,7 +286,7 @@ export const Product = () => {
                   <td>{pkg.category}</td>
                   <td>{pkg.production_date}</td>
                   <td>{pkg.expired_date}</td>
-                  <td className={styles.time_left}>{pkg.product_time_left}</td>
+                  <td> <p className={styles.time_left}>{pkg.product_time_left}</p> </td>
                   <td>{pkg.import_date}</td>
                   <td>{pkg.export_date}</td>
                   <td className={styles.actions}>

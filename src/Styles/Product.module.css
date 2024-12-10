@@ -3,6 +3,8 @@
   height: 758px;
   justify-self:center;
   margin-top: 2%;
+  overflow-y: auto;
+  min-height: 500px;
   
   border-radius: 8px;
   background: #FFF;
@@ -88,7 +90,6 @@
 .table_wrapper{
   /* margin: 1%; */
   overflow-x: auto;
-  
 }
 .product_table {
   width: 100%;
@@ -124,6 +125,12 @@
 {
   margin: 10px;
 }
+
+.time_left {
+  color:#DC4446;
+  font-weight: bold;
+}
+
 .edit_button {
   border: none;
   background-color: #FFF;
@@ -134,7 +141,6 @@
   background-color: #FFF;
   cursor: pointer;
 }
-
 
 .AddProductModalOverlay {
   position: fixed;
@@ -205,3 +211,4 @@
   color: #4A628A;
   font-family: Roboto;
 }
+

@@ -54,6 +54,13 @@
   outline: none;
   border: none;
 }
+
+.Link {
+  color:#4A628A;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 .icon{
     font-size: 14px;
     margin: 3%;
