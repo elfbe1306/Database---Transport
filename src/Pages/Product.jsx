@@ -22,7 +22,7 @@ export const Product = () => {
   // Fetch packages based on the search query
   const fetchPackages = async () => {
     try {
-      let query = supabase.from('package').select('package_id, product_name, product_total, category, production_date, expired_date, product_time_left, import_date, export_date');
+      let query = supabase.from('package').select('package_id, product_name, product_total, category, production_date, expired_date, product_time_left, import_date, export_date, branch_warehouse(branch_id, warehouse(w_name))');
       
       if (searchQuery) {
         query = query.ilike('product_name', `%${searchQuery}%`);
@@ -274,6 +274,7 @@ export const Product = () => {
                 <th>Time Left</th>
                 <th>Imported Date</th>
                 <th>Exported Date</th>
+                <th>Branch Name</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -289,6 +290,7 @@ export const Product = () => {
                   <td> <p className={styles.time_left}>{pkg.product_time_left}</p> </td>
                   <td>{pkg.import_date}</td>
                   <td>{pkg.export_date}</td>
+                  <td>{pkg.branch_warehouse?.warehouse?.w_name}</td>
                   <td className={styles.actions}>
                     <button className={styles.edit_button} onClick={() => handleOpenEditModal(pkg)}>✏️</button>
                     <button className={styles.delete_button} onClick={() => handleDeleteProduct(pkg.package_id)}>❌</button>

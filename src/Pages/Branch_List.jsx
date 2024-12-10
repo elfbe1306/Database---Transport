@@ -14,16 +14,33 @@ export const Branch_List = () => {
   }, [])
 
   const fetchWarehouse = async () => {
-    const {data, error} = await supabase.from('warehouse').select('*').order('w_id', {ascending: true});
-    if(error) {
-      console.error('Error fetching warehouses:', error)
-    } else {
+    try {
+      const { data: branchIds, error: branchError } = await supabase
+        .from('branch_warehouse')
+        .select('branch_id');
+  
+      if (branchError) throw branchError;
+
+      const branchIdArray = branchIds.map((item) => item.branch_id);
+
+      const { data, error } = await supabase
+        .from('warehouse')
+        .select('*')
+        .in('w_id', branchIdArray)
+        .order('w_id', { ascending: true });
+  
+      if (error) throw error;
+
       const filteredData = data.filter((house) =>
         house.w_name.toLowerCase().includes(searchQuery.toLowerCase())
       );
+  
       setWarehouses(filteredData);
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching warehouses:', error.message);
     }
-  }
+  };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
