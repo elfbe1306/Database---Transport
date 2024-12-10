@@ -57,6 +57,7 @@
   cursor: pointer;
 }
 .search_input_box {
+  display: flex;
   width: 200px;
   height: 25px;
   border: none;
@@ -66,11 +67,16 @@
 }
 .search_input {
   border: none;
+  border-radius: 20px;
   background-color: rgba(240, 240, 240, 0.59);
 }
 .search_input:focus {
   outline: none;
   border: none;
+}
+.icon{
+  font-size: 14px;
+  margin: 3%;
 }
 .divider {
   width: 94%;

@@ -2,11 +2,9 @@ import React from 'react'
 import { Header } from '../components/Header'
 import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Branch_Product.module.css'
-import { useParams } from 'react-router-dom'
 
 export const Branch_Product = () => {
-  const { branch_id } = useParams();
-  
+
   return (
     <div >
       <Header></Header>

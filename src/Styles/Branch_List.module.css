@@ -29,7 +29,15 @@
   border-bottom: #4A628A;
   border-bottom: 10 px;
 }
+.ActionButton {
+  display: flex;
+  position: relative; 
+  gap: 20px;
+  align-items: center;
+  margin-right: 15px;
+}
 .search_input_box {
+  display: flex;
   width: 200px;
   height: 25px;
   border: none;
@@ -39,11 +47,16 @@
 }
 .search_input {
   border: none;
+  border-radius: 20px;
   background-color: rgba(240, 240, 240, 0.59);
 }
 .search_input:focus {
   outline: none;
   border: none;
+}
+.icon{
+    font-size: 14px;
+    margin: 3%;
 }
 .divider {
   width: 94%;

@@ -246,7 +246,7 @@ export const Product = () => {
               Add product
             </button>
             <div className={styles.search_input_box}>
-              <TfiSearch />
+              <TfiSearch className={styles.icon} />
               <input 
                 type="text" 
                 className={styles.search_input} 

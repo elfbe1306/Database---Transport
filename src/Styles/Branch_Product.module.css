@@ -58,7 +58,8 @@
 }
 .search_input {
     border: none;
-    background-color: rgba(240, 240, 240, 0.59);
+    border-radius: 20px;
+    background: rgba(240, 240, 240, 0.59);
   }
   .search_input:focus {
     outline: none;
