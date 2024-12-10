@@ -5,7 +5,7 @@
   position: absolute;
   padding: 10px 5px;
   top: 155px;
-  left: 30px;
+  left: 120px;
   gap: 465px;
 }
 .bigTable{
@@ -15,7 +15,7 @@
   position: relative;
   padding: 60px 5px;
   top: 150px;
-  left: 20px;
+  left: 120px;
   gap: 110px;
   box-sizing: border-box;
 }
