@@ -1,12 +1,13 @@
 import React from 'react'
 import styles from '../../Styles/DashBoard_Styles/InfoBlock.module.css'
+import { Link } from 'react-router-dom';
 
 export const InfoBlock = ({ title, data, headerColor }) => {
   return (
     <div className={styles.info_block} style={{ backgroundColor: headerColor }}>
       <div className={styles.info_header}>
         <span className={styles.info_title}>{title}</span>
-        <span className={styles.info_view_all}>View All</span>
+        <Link to="/dashboard/product" className={styles.info_view_all}>View All</Link>
       </div>
       <div className={styles.info_data}>
         {data?.map((item, index) => (

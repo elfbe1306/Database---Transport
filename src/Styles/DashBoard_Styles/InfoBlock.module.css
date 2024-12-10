@@ -33,6 +33,7 @@
   font-size: 14px;
   color: #4096FF;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .info_data {

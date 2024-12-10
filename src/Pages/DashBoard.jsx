@@ -4,13 +4,51 @@ import { Header } from '../components/Header';
 import { InfoBlock } from '../components/DashBoard_Components/InfoBlock';
 import styles from '../Styles/DashBoard_Styles/DashBoard.module.css';
 import { TableComponent } from '../components/DashBoard_Components/TableComponent';
+import supabase from '../supabase-client';
+import { use } from 'react';
 
 export const DashBoard = () => {
-  const productData = [
-    { label: 'AVAILABLE', value: 100, color: '#4096FF' },
-    { label: 'EXPIRED PRODUCTS', value: 100, color: '#DC4446' },
-  ];
+  const [showAssignContainer, setShowAssignContainer] = useState(false);
+  const toggleAssignContainer = () => {
+    setShowAssignContainer(!showAssignContainer);
+  };
+  if(showAssignContainer){
+    document.body.classList.add(styles.active_modal)
+  }else{
+    document.body.classList.remove(styles.active_modal)
+  }
 
+  //Supabase query
+  const [availableProductTotal, setAvailableProductTotal] = useState('');
+  const [notAvailableProductTotal, setNotAvailableProductTotal] = useState('');
+
+  useEffect(() => {
+    handleAvailableProductTotal();
+    handleNotAvailableProductTotal();
+  }, [])
+
+  const handleAvailableProductTotal = async () => {
+    const {data, error} = await supabase.rpc('find_total_product_still_available');
+    if (error) {
+      console.error('Error getting product still available:', error);
+    } else {
+      setAvailableProductTotal(data);
+    }
+  }
+  const handleNotAvailableProductTotal = async () => {
+    const { data, error} = await supabase.rpc('find_total_product_not_available');
+    if (error) {
+      console.error('Error getting product not available:', error);
+    } else {
+      setNotAvailableProductTotal(data);
+    }
+  }
+
+  //Data passing
+  const productData = [
+    { label: 'AVAILABLE', value: availableProductTotal, color: '#4096FF' },
+    { label: 'EXPIRED PRODUCTS', value: notAvailableProductTotal, color: '#DC4446' },
+  ];
   const exportData = [
     { label: 'READY TO DELIVERY', value: 23, color: '#4096FF' },
     { label: 'DELIVERING', value: 12, color: '#69B1FF' },
@@ -28,17 +66,6 @@ export const DashBoard = () => {
     { store: "To Hien Thanh", quantity: "3 cartons", duration: "4 days next", top: 188 },
   ];
 
-  const [showAssignContainer, setShowAssignContainer] = useState(false);
-
-  const toggleAssignContainer = () => {
-    setShowAssignContainer(!showAssignContainer);
-  };
-  if(showAssignContainer){
-    document.body.classList.add(styles.active_modal)
-  }else{
-    document.body.classList.remove(styles.active_modal)
-  }
-
   return (
     <div>
       <Header></Header>
@@ -49,7 +76,7 @@ export const DashBoard = () => {
       </div>
 
       <div className={styles.bigTable}>
-        <TableComponent title="NEED TO BE RESTOCKED" rowData={rowData1} lastColumnType="choose" backgroundColor="#FFFFE8B8" />  
+        <TableComponent title="NEED TO BE RESTOCKED" rowData={rowData1} lastColumnType="choose" backgroundColor="#FFFFE8B8"/>  
         <TableComponent 
           title="STOCK" 
           rowData={rowData2} 
