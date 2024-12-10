@@ -6,6 +6,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import { Product } from "./Pages/Product";
 import { Branch_List } from "./Pages/Branch_List";
 import { Branch_Product } from "./Pages/Branch_Product";
+import { Branch_Product_Restock } from "./Pages/Branch_Product_Restock";
 
 function App() {
   return(
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard/product" element={<PrivateRoute> <Product/> </PrivateRoute>}/>
         <Route path="/dashboard/branch" element={<PrivateRoute> <Branch_List/> </PrivateRoute>}/>
         <Route path="/dashboard/branch-product/:branch_id" element={<PrivateRoute> <Branch_Product/> </PrivateRoute>}/>
+        <Route path="/dashboard/branch-product/:branch_id/restock" element={<PrivateRoute> <Branch_Product_Restock/> </PrivateRoute>}/>
       </Routes>
     </div>
   );
