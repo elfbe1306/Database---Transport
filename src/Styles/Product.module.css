@@ -68,6 +68,10 @@
   border: none;
   background-color: rgba(240, 240, 240, 0.59);
 }
+.search_input:focus {
+  outline: none;
+  border: none;
+}
 .divider {
   width: 94%;
   height: 0;

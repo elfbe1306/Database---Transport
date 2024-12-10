@@ -12,16 +12,24 @@ export const Product = () => {
   const [total, setTotal] = useState('');
   const [productionDate, setProductionDate] = useState('');
   const [expirationDate, setExpirationDate] = useState('');
+  const [searchQuery, setSearchQuery] = useState(''); // New state for search query
 
   useEffect(() => {
     fetchPackages();
     fetchCategory();
   }, []);
 
-  // Fetch packages
+  // Fetch packages based on the search query
   const fetchPackages = async () => {
     try {
-      const { data, error } = await supabase.from('package').select('package_id, product_name, product_total, category, production_date, expired_date, product_time_left, import_date, export_date');
+      let query = supabase.from('package').select('package_id, product_name, product_total, category, production_date, expired_date, product_time_left, import_date, export_date');
+      
+      if (searchQuery) {
+        query = query.ilike('product_name', `%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query;
+      
       if (error) {
         console.error('Error fetching packages:', error);
       } else {
@@ -32,7 +40,7 @@ export const Product = () => {
     }
   };
 
-  //Calculate Product Time Left
+  // Calculate Product Time Left
   const handleProductTimeLeft = async () => {
     try {
       const { data, error } = await supabase.rpc('calculate_product_time_left');
@@ -51,20 +59,32 @@ export const Product = () => {
 
   // Fetch Category
   const fetchCategory = async () => {
-    const { data, error } = await supabase.rpc('get_all_categories')
+    const { data, error } = await supabase.rpc('get_all_categories');
     if (error) {
       console.error('Error getting categories:', error);
     } else {
       setCategories(data);
     }
-  }
+  };
 
-  //Set Category
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Handle search submit (Enter key press)
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter') {
+      fetchPackages(); // Fetch the packages based on the current search query
+    }
+  };
+
+  // Set Category
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
 
-  //Handle submit
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -128,17 +148,15 @@ export const Product = () => {
   
       const currentDate = new Date().toISOString().split('T')[0];
   
-      const { data: insertData, error: insertError } = await supabase.from('package').insert([
-        {
-          package_id: newPackageId,
-          product_name: productName,
-          category: selectedCategory,
-          product_total: total,
-          production_date: productionDate,
-          expired_date: expirationDate,
-          import_date: currentDate,
-        },
-      ]).select();
+      const { data: insertData, error: insertError } = await supabase.from('package').insert([{
+        package_id: newPackageId,
+        product_name: productName,
+        category: selectedCategory,
+        product_total: total,
+        production_date: productionDate,
+        expired_date: expirationDate,
+        import_date: currentDate,
+      }]).select();
   
       if (insertError) {
         console.error('Error saving product:', insertError.message);
@@ -159,7 +177,6 @@ export const Product = () => {
     setExpirationDate('');
   };
 
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -230,7 +247,14 @@ export const Product = () => {
             </button>
             <div className={styles.search_input_box}>
               <TfiSearch />
-              <input type="text" className={styles.search_input} placeholder="Search products..." />
+              <input 
+                type="text" 
+                className={styles.search_input} 
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyPress={handleSearchSubmit} // Listen for 'Enter' key press
+              />
             </div>
           </div>
         </div>
