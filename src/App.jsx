@@ -15,7 +15,7 @@ function App() {
         <Route path="/dashboard" element={<PrivateRoute> <DashBoard/> </PrivateRoute>}/>
         <Route path="/dashboard/product" element={<PrivateRoute> <Product/> </PrivateRoute>}/>
         <Route path="/dashboard/branch" element={<PrivateRoute> <Branch_List/> </PrivateRoute>}/>
-        <Route path="/dashboard/branch-product" element={<PrivateRoute> <Branch_Product/> </PrivateRoute>}/>
+        <Route path="/dashboard/branch-product/:branch_id" element={<PrivateRoute> <Branch_Product/> </PrivateRoute>}/>
       </Routes>
     </div>
   );

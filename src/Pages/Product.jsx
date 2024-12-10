@@ -253,7 +253,7 @@ export const Product = () => {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                onKeyPress={handleSearchSubmit} // Listen for 'Enter' key press
+                onKeyDown={handleSearchSubmit} // Listen for 'Enter' key press
               />
             </div>
           </div>
