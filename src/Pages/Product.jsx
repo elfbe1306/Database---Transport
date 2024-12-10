@@ -228,8 +228,10 @@ export const Product = () => {
             <button className={styles.Addbutton} onClick={handleOpenModal}>
               Add product
             </button>
-            <input type="text" className={styles.search_input} placeholder="Search products..." />
-            <TfiSearch />
+            <div className={styles.search_input_box}>
+              <TfiSearch />
+              <input type="text" className={styles.search_input} placeholder="Search products..." />
+            </div>
           </div>
         </div>
 
