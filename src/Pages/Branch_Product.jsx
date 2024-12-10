@@ -7,18 +7,20 @@ import supabase from '../supabase-client';
 import { Link } from 'react-router-dom';
 
 export const Branch_Product = () => {
-  const {branch_id} = useParams();
+  const { branch_id } = useParams();
   const [branchName, setBranchName] = useState('');
-  const [branchPackage, setBranchPackage] = useState([])
+  const [branchPackage, setBranchPackage] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(()=> {
+  useEffect(() => {
     fetchBranchName();
     fetchProductInBranch();
-  }, [])
+  }, [branch_id]); 
 
   const fetchBranchName = async () => {
-    const {data, error} = await supabase.rpc('retrieve_warehouse_name', {branch_id});
-    if(error) {
+    const { data, error } = await supabase.rpc('retrieve_warehouse_name', { branch_id });
+    if (error) {
       console.error('Error fetching name:', error);
     } else {
       setBranchName(data);
@@ -26,11 +28,33 @@ export const Branch_Product = () => {
   }
 
   const fetchProductInBranch = async () => {
-    const {data, error} = await supabase.from('package').select('*').eq('branch_id', branch_id);
-    if(error) {
+    const { data, error } = await supabase.from('package').select('*').eq('branch_id', branch_id);
+    if (error) {
       console.error('Error fetching product from branch:', error);
     } else {
       setBranchPackage(data);
+      setFilteredProducts(data);
+    }
+  }
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value); 
+  }
+
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter') {
+      filterProducts(searchQuery);
+    }
+  };
+
+  const filterProducts = (query) => {
+    if (query === '') {
+      setFilteredProducts(branchPackage); 
+    } else {
+      const filtered = branchPackage.filter(pkg =>
+        pkg.product_name.toLowerCase().includes(query.toLowerCase()) 
+      );
+      setFilteredProducts(filtered);
     }
   }
 
@@ -48,6 +72,9 @@ export const Branch_Product = () => {
               type="text" 
               className={styles.search_input} 
               placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchSubmit}
           />
           </div>
         </div>
@@ -71,7 +98,7 @@ export const Branch_Product = () => {
             </tr>
           </thead>
           <tbody>
-            {branchPackage.map((pkg) => (
+            {filteredProducts.map((pkg) => (
               <tr key={pkg.package_id}>
                 <td>{pkg.package_id}</td>
                 <td>{pkg.product_name}</td>
