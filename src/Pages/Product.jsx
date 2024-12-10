@@ -18,6 +18,7 @@ export const Product = () => {
     fetchCategory();
   }, []);
 
+  // Fetch packages
   const fetchPackages = async () => {
     try {
       const { data, error } = await supabase.from('package').select('package_id, product_name, product_total, category, production_date, expired_date, product_time_left, import_date, export_date');
@@ -31,6 +32,7 @@ export const Product = () => {
     }
   };
 
+  //Calculate Product Time Left
   const handleProductTimeLeft = async () => {
     try {
       const { data, error } = await supabase.rpc('calculate_product_time_left');
@@ -47,86 +49,118 @@ export const Product = () => {
     }
   };
 
+  // Fetch Category
   const fetchCategory = async () => {
     const { data, error } = await supabase.rpc('get_all_categories')
     if (error) {
       console.error('Error getting categories:', error);
     } else {
-      setCategories(data)
-      console.log('Categories: ', categories);
+      setCategories(data);
     }
   }
 
+  //Set Category
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
 
+  //Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Validate form fields
     if (!productName || !selectedCategory || !total || !productionDate || !expirationDate) {
       alert('All fields are required, and category cannot be empty.');
       return;
     }
   
-    // Generate the package_id based on the category
-    let packagePrefix = selectedCategory.includes('Nước hoa') ? 'NH' : 'MP';
-    let newPackageId;
-  
-    // Fetch the highest package_id in the database
-    const { data, error } = await supabase
-      .from('package')
-      .select('package_id')
-      .ilike('package_id', `${packagePrefix}%`) // Find all package_ids starting with the selected prefix
-      .order('package_id', { ascending: false }) // Order by package_id in descending order
-      .limit(1); // Limit to just the highest package_id
-  
-    if (error) {
-      console.error('Error fetching highest package_id:', error);
-      alert('Error fetching package ID');
-      return;
-    }
-  
-    if (data && data.length > 0) {
-      // Extract the last 4 digits from the highest package_id and increment
-      const lastPackageId = data[0].package_id;
-      const lastNumber = parseInt(lastPackageId.slice(2), 10); // Remove the prefix (NH or MP)
-      const newNumber = String(lastNumber + 1).padStart(4, '0'); // Increment and pad with leading zeros
-      newPackageId = `${packagePrefix}${newNumber}`;
-    } else {
-      // If no matching package_id exists, start from 0001
-      newPackageId = `${packagePrefix}0001`;
-    }
-  
-    // Insert the new package into the database
-    const { data: insertData, error: insertError } = await supabase.from('package').insert([
-      {
-        package_id: newPackageId, // Use the generated package_id
+    if (editingPackage) {
+      // Editing existing package
+      const updatedData = {
         product_name: productName,
         category: selectedCategory,
         product_total: total,
         production_date: productionDate,
         expired_date: expirationDate,
-      },
-    ]).select();
+      };
   
-    if (insertError) {
-      console.log('Error saving product: ' + insertError.message);
+      const { error } = await supabase
+        .from('package')
+        .update(updatedData)
+        .eq('package_id', editingPackage.package_id);
+  
+      if (error) {
+        console.error('Error updating package:', error);
+        alert('Failed to update package');
+      } else {
+        setPackages(packages.map(pkg =>
+          pkg.package_id === editingPackage.package_id
+            ? { ...pkg, ...updatedData }
+            : pkg
+        ));
+        alert('Package updated successfully!');
+      }
     } else {
-      console.log('Product saved:', insertData);
-      setProductName('');
-      setSelectedCategory('');
-      setTotal('');
-      setProductionDate('');
-      setExpirationDate('');
-      alert('Product saved successfully!');
+      // Adding a new package
+      let packagePrefix = selectedCategory.includes('Nước hoa') ? 'NH' : 'MP';
+      let newPackageId;
+  
+      const { data, error } = await supabase
+        .from('package')
+        .select('package_id')
+        .ilike('package_id', `${packagePrefix}%`)
+        .order('package_id', { ascending: false })
+        .limit(1);
+  
+      if (error) {
+        console.error('Error fetching highest package_id:', error);
+        alert('Error fetching package ID');
+        return;
+      }
+  
+      if (data && data.length > 0) {
+        const lastPackageId = data[0].package_id;
+        const lastNumber = parseInt(lastPackageId.slice(2), 10);
+        const newNumber = String(lastNumber + 1).padStart(4, '0');
+        newPackageId = `${packagePrefix}${newNumber}`;
+      } else {
+        newPackageId = `${packagePrefix}0001`;
+      }
+  
+      const currentDate = new Date().toISOString().split('T')[0];
+  
+      const { data: insertData, error: insertError } = await supabase.from('package').insert([
+        {
+          package_id: newPackageId,
+          product_name: productName,
+          category: selectedCategory,
+          product_total: total,
+          production_date: productionDate,
+          expired_date: expirationDate,
+          import_date: currentDate,
+        },
+      ]).select();
+  
+      if (insertError) {
+        console.error('Error saving product:', insertError.message);
+      } else {
+        console.log('Product saved:', insertData);
+        setPackages([...packages, insertData[0]]);
+        alert('Product saved successfully!');
+      }
     }
+  
+    // Reset form and close modal
+    setEditingPackage(null);
+    setIsModalOpen(false);
+    setProductName('');
+    setSelectedCategory('');
+    setTotal('');
+    setProductionDate('');
+    setExpirationDate('');
   };
 
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -135,7 +169,48 @@ export const Product = () => {
   };
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
+      setEditingPackage(null);
+      setProductName('');
+      setSelectedCategory('');
+      setTotal('');
+      setProductionDate('');
+      setExpirationDate('');
       handleCloseModal();
+    }
+  };
+
+  const [editingPackage, setEditingPackage] = useState(null);
+
+  const handleOpenEditModal = (pkg) => {
+    setEditingPackage(pkg);
+    setProductName(pkg.product_name);
+    setSelectedCategory(pkg.category);
+    setTotal(pkg.product_total);
+    setProductionDate(pkg.production_date);
+    setExpirationDate(pkg.expired_date);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = async (packageId) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        const { error } = await supabase
+          .from('package')
+          .delete()
+          .eq('package_id', packageId);
+  
+        if (error) {
+          console.error('Error deleting product:', error);
+          alert('Failed to delete the product.');
+        } else {
+          // Remove the product from the local state
+          setPackages(packages.filter((pkg) => pkg.package_id !== packageId));
+          alert('Product deleted successfully!');
+        }
+      } catch (err) {
+        console.error('Unexpected error during deletion:', err);
+        alert('An error occurred while deleting the product.');
+      }
     }
   };
 
@@ -189,8 +264,8 @@ export const Product = () => {
                   <td>{pkg.import_date}</td>
                   <td>{pkg.export_date}</td>
                   <td className={styles.actions}>
-                    <button className={styles.edit_button}>✏️</button>
-                    <button className={styles.delete_button}>❌</button>
+                    <button className={styles.edit_button} onClick={() => handleOpenEditModal(pkg)}>✏️</button>
+                    <button className={styles.delete_button} onClick={() => handleDeleteProduct(pkg.package_id)}>❌</button>
                   </td>
                 </tr>
               ))}
@@ -202,8 +277,8 @@ export const Product = () => {
       {/* Add Product Modal */}
       {isModalOpen && (
         <div className={styles.AddProductModalOverlay} onClick={handleOverlayClick}>
-          <div className={styles.AddProductModal}>
-            <h2 className={styles.AddProductModalTitle}>New Product</h2>
+          <div className={editingPackage ? styles.EditProductModal : styles.AddProductModal}>
+            <h2 className={styles.AddProductModalTitle}>{editingPackage ? 'Edit Product' : 'New Product'}</h2>
             <form onSubmit={handleSubmit}>
               <div className={styles.FormGroup}>
                 <label className={styles.labelText}>Product Name</label>
