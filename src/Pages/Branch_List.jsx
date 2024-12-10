@@ -46,8 +46,9 @@ export const Branch_List = () => {
       <div className={styles.Content}>
         <div className={styles.Wrapper}>
           <div className={styles.TableName}>WAREHOUSE</div>
-            <div className={styles.search_input_box}>
-              <TfiSearch />
+          <div className={styles.ActionButton}>
+          <div className={styles.search_input_box}>
+              <TfiSearch className={styles.icon}/>
               <input 
                 type="text" 
                 className={styles.search_input} 
@@ -57,6 +58,7 @@ export const Branch_List = () => {
                 onKeyDown={handleSearchSubmit}
               />
             </div>
+          </div>
         </div>
 
         <div className={styles.divider}></div>
