@@ -4,6 +4,7 @@ import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Branch_Product.module.css'
 import { useParams } from 'react-router-dom';
 import supabase from '../supabase-client';
+import { Link } from 'react-router-dom';
 
 export const Branch_Product = () => {
   const {branch_id} = useParams();
@@ -29,7 +30,7 @@ export const Branch_Product = () => {
         <div className={styles.Wrapper}>
         <div className={styles.TableName}>{branchName}'s PRODUCT</div>
         <div className={styles.ActionButton}>
-          <button className={styles.Restock}>Restock</button>
+          <Link to={`/dashboard/branch-product/${branch_id}/restock`} className={styles.Restock}>Restock</Link>
           <div className={styles.search_input_box}>
           <TfiSearch className={styles.icon} />
           <input 

@@ -37,8 +37,8 @@
     margin-right: 15px;
 }
 .Restock {
-    width: 98px;
-    height: 28px;
+    width: 100px;
+    height: 20px;
     border-radius: 15px;
     border: none;
     background: #4A628A;
@@ -46,6 +46,10 @@
     font-weight: 500;
     color: #FFF;
     cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 .search_input_box {
     display: flex;
