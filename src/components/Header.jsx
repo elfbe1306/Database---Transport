@@ -10,7 +10,7 @@ export const Header = () => {
         <Link to="/dashboard/product" className={styles.NaviText}>Products</Link>
         <Link to="/dashboard/export" className={styles.NaviText}>Export</Link>
         <Link to="/dashboard/branch" className={styles.NaviText}>Branch</Link>
-        <Link to="" className={styles.NaviText}>Stock</Link>
+        <Link to="/dashboard/stock" className={styles.NaviText}>Stock</Link>
         <Link to="" className={styles.NaviText}>Report</Link>
       </div>
     </div>

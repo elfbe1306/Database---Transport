@@ -8,6 +8,7 @@ import { Branch_List } from "./Pages/Branch_List";
 import { Branch_Product } from "./Pages/Branch_Product";
 import { Branch_Product_Restock } from "./Pages/Branch_Product_Restock";
 import { Export } from "./Pages/Export";
+import { Stock } from "./Pages/Stock";
 
 function App() {
   return(
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard/branch-product/:branch_id" element={<PrivateRoute> <Branch_Product/> </PrivateRoute>}/>
         <Route path="/dashboard/branch-product/:branch_id/restock" element={<PrivateRoute> <Branch_Product_Restock/> </PrivateRoute>}/>
         <Route path="/dashboard/export" element={<PrivateRoute> <Export/> </PrivateRoute>}/>
+        <Route path="/dashboard/stock" element={<PrivateRoute> <Stock/> </PrivateRoute>}/>
       </Routes>
     </div>
   );
