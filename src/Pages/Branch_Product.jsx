@@ -9,9 +9,11 @@ import { Link } from 'react-router-dom';
 export const Branch_Product = () => {
   const {branch_id} = useParams();
   const [branchName, setBranchName] = useState('');
+  const [branchPackage, setBranchPackage] = useState([])
 
   useEffect(()=> {
     fetchBranchName();
+    fetchProductInBranch();
   }, [])
 
   const fetchBranchName = async () => {
@@ -20,6 +22,15 @@ export const Branch_Product = () => {
       console.error('Error fetching name:', error);
     } else {
       setBranchName(data);
+    }
+  }
+
+  const fetchProductInBranch = async () => {
+    const {data, error} = await supabase.from('package').select('*').eq('branch_id', branch_id);
+    if(error) {
+      console.error('Error fetching product from branch:', error);
+    } else {
+      setBranchPackage(data);
     }
   }
 
@@ -60,15 +71,19 @@ export const Branch_Product = () => {
             </tr>
           </thead>
           <tbody>
-            <td>MP0001</td>
-            <td>Sữa Rửa Mặt CeraVe Sạch Sâu Cho Da Thường Đến Da Dầu 473ml</td>
-            <td>100</td>
-            <td>Sữa rửa mặt</td>
-            <td>20 - 08 - 2024</td>
-            <td>09 - 12 - 2026</td>
-            <td>2 years</td>
-            <td>08 - 09 - 2024</td>
-            <td>NULL</td>
+            {branchPackage.map((pkg) => (
+              <tr key={pkg.package_id}>
+                <td>{pkg.package_id}</td>
+                <td>{pkg.product_name}</td>
+                <td>{pkg.product_total}</td>
+                <td>{pkg.category}</td>
+                <td>{pkg.production_date}</td>
+                <td>{pkg.expired_date}</td>
+                <td>{pkg.product_time_left}</td>
+                <td>{pkg.import_date}</td>
+                <td>{pkg.export_date}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

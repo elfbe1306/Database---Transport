@@ -25,7 +25,7 @@ export const Branch_List = () => {
 
       const { data, error } = await supabase
         .from('warehouse')
-        .select('*')
+        .select('w_id, w_name, w_location, w_area, w_email, w_phoneno, employee(fullname)')
         .in('w_id', branchIdArray)
         .order('w_id', { ascending: true });
   
@@ -102,7 +102,7 @@ export const Branch_List = () => {
                   <td>{house.w_area}</td>
                   <td>{house.w_email}</td>
                   <td>{house.w_phoneno}</td>
-                  <td>{house.supervisor_id}</td>
+                  <td>{house.employee?.fullname}</td>
                 </tr>
               ))}
             </tbody>
