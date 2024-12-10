@@ -11,10 +11,14 @@ export const Branch_Product_Restock = () => {
   const [branchPackage, setBranchPackage] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [warehouses, setWarehouses] = useState([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
     fetchBranchName();
     fetchProductInBranch();
+    fetchWarehouse();
   }, [branch_id]); 
 
   const fetchBranchName = async () => {
@@ -32,7 +36,16 @@ export const Branch_Product_Restock = () => {
       console.error('Error fetching product from branch:', error);
     } else {
       setBranchPackage(data);
-      setFilteredProducts(data); // Initially set filtered products to all products
+      setFilteredProducts(data);
+    }
+  }
+
+  const fetchWarehouse = async () => {
+    const { data, error } = await supabase.from('warehouse').select('w_id, w_name, w_location, w_area');
+    if (error) {
+      console.error('Error fetching warehouse from branch:', error);
+    } else {
+      setWarehouses(data);
     }
   }
 
@@ -57,8 +70,18 @@ export const Branch_Product_Restock = () => {
     }
   };
 
-  // Handle checkbox for each row (by package_id)
-  const handleCheckboxChange = (packageId) => {
+  const handleWarehouseChange = (e) => {
+    const warehouse = e.target.value;
+    setSelectedWarehouse(warehouse);
+
+    // Find the selected warehouse information
+    const selected = warehouses.find(w => w.w_name === warehouse);
+    setAddress(selected ? { location: selected.w_location, area: selected.w_area } : {});
+  };
+
+  const [address, setAddress] = useState({ location: '', area: '' });
+
+  const handleCheckboxChange = (packageId, productName, productTotal) => {
     setFilteredProducts(prevState => 
       prevState.map(pkg =>
         pkg.package_id === packageId
@@ -66,6 +89,44 @@ export const Branch_Product_Restock = () => {
           : pkg
       )
     );
+
+    if (selectedProducts.some(product => product.package_id === packageId)) {
+      setSelectedProducts(prevState => 
+        prevState.filter(product => product.package_id !== packageId)
+      );
+    } else {
+      setSelectedProducts(prevState => [
+        ...prevState,
+        { package_id: packageId, name: productName, total: productTotal }
+      ]);
+    }
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedWarehouse('');
+    setAddress('');
+  };
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleCloseModal();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+
+    if (error) {
+      console.error('Error creating report:', error);
+    } else {
+      console.log('Report created successfully:', data);
+      handleCloseModal(); // Close the modal
+    }
   };
 
   return (
@@ -75,7 +136,7 @@ export const Branch_Product_Restock = () => {
         <div className={styles.Wrapper}>
           <div className={styles.TableName}>{branchName}'s PRODUCT</div>
           <div className={styles.ActionButton}>
-            <button className={styles.Create}>Create Report</button>
+            <button className={styles.Create} onClick={handleOpenModal}>Create Report</button>
             <div className={styles.search_input_box}>
               <TfiSearch className={styles.icon} />
               <input 
@@ -123,7 +184,7 @@ export const Branch_Product_Restock = () => {
                       className={styles.check_box}
                       type="checkbox" 
                       checked={pkg.isChecked || false}
-                      onChange={() => handleCheckboxChange(pkg.package_id)} 
+                      onChange={() => handleCheckboxChange(pkg.package_id, pkg.product_name, pkg.product_total)} 
                     />
                   </td>
                 </tr>
@@ -131,8 +192,61 @@ export const Branch_Product_Restock = () => {
             </tbody>
           </table>
         </div>
-
       </div>
+
+      {isModalOpen && (
+        <div className={styles.CreateReportModalOverlay} onClick={handleOverlayClick}>
+          <div className={styles.CreateReportModal}>
+            <h2 className={styles.CreateReportModalTitle}>Report</h2>
+            <form onSubmit={handleSubmit}>
+              <div className={styles.FormGroup}>
+                <label className={styles.labelText}>Product Name</label>
+                <p className={styles.ProductDisplay}>
+                  {selectedProducts.map(product => (
+                    <span key={product.package_id}>
+                      {product.name} (Total: {product.total})<br />
+                    </span>
+                  ))}
+                </p>
+              </div>
+
+              <div className={styles.FormGroup}>
+                <label className={styles.labelText}>Export to</label>
+                <select
+                  className={styles.SelectInput}
+                  value={selectedWarehouse}
+                  onChange={handleWarehouseChange}
+                >
+                  <option value="">Select a warehouse</option>
+                  {warehouses && warehouses.length > 0 ? (
+                    warehouses.map((house) => (
+                      <option key={house.w_id} value={house.w_name}>
+                        {house.w_name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">No warehouse available</option>
+                  )}
+                </select>
+              </div>
+
+              <div className={styles.FormGroup}>
+                <label className={styles.labelText}>Address</label>
+                <p className={styles.AddressDisplay}>
+                  {address.location && <span>{address.location}, {address.area}</span>}
+                </p>
+              </div>
+
+              <div className={styles.ModalActions}>
+                <button type="submit" className={styles.SaveButton}>
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
