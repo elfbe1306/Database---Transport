@@ -6,10 +6,11 @@ import supabase from '../supabase-client'
 
 export const Export = () => {
   const [exportReport, setExportReport] = useState([]);
+  const [warehouseLocation, setWarehouseLocation] = useState([])
 
   useEffect(() => {
     fetchExportReport();
-    fetchTesting();
+    fetchingWarehouseAddress();
   }, []);
 
   const fetchExportReport = async () => {
@@ -20,6 +21,24 @@ export const Export = () => {
       setExportReport(data);
     }
   }
+
+  const fetchingWarehouseAddress = async () => {
+    const { data, error } = await supabase
+      .from('export_report_has_package')
+      .select('export_report_id, package(package_id, branch_warehouse(branch_id, warehouse(w_location, w_area)))');
+    if (error) {
+      console.error('Error fetching warehouse locations:', error);
+    } else {
+      const locationMap = {};
+      data.forEach((item) => {
+        const reportId = item.export_report_id;
+        const location = item.package?.branch_warehouse?.warehouse?.w_location || 'Unknown Location';
+        const area = item.package?.branch_warehouse?.warehouse?.w_area || 'Unknown Area';
+        locationMap[reportId] = `${location} - ${area}`;
+      });
+      setWarehouseLocation(locationMap);
+    }
+  };
 
   return (
     <div>
@@ -56,7 +75,7 @@ export const Export = () => {
             {exportReport.map((report) => (
               <tr key={report.report_id}>
                 <td>{report.report_id}</td>
-                <td>Warehouse Location</td>
+                <td>{warehouseLocation[report.report_id]}</td>
                 <td>{report.report_create_date}</td>
                 <td>{report.report_create_time}</td>
                 <td>{report.status}</td>
