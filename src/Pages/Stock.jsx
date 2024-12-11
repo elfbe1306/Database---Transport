@@ -2,6 +2,7 @@ import React from 'react'
 import { Header } from '../components/Header'
 import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Stock.module.css'
+import { Export_Report } from '../components/Export_Report';
 
 export const Stock = () => {
   return (
@@ -45,6 +46,7 @@ export const Stock = () => {
         </table>
       </div>
     </div>
+
    </div>
   )
 }

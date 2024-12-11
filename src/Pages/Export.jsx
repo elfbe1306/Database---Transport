@@ -3,6 +3,7 @@ import { Header } from '../components/Header'
 import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
 import supabase from '../supabase-client'
+import { Export_Report } from '../components/Export_Report';
 
 export const Export = () => {
   const [exportReport, setExportReport] = useState([]);
@@ -10,6 +11,7 @@ export const Export = () => {
   const [warehouseLocation, setWarehouseLocation] = useState({});
   const [drivers, setDrivers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState("");
 
@@ -113,6 +115,20 @@ export const Export = () => {
     }
   };
 
+  const handleDocOpenModal = () => {
+    setIsDocModalOpen(true);
+  };
+
+  const handleDocCloseModal = () => {
+    setIsDocModalOpen(false);
+  };
+
+  const handleDocOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleDocCloseModal();
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -152,7 +168,7 @@ export const Export = () => {
                   <td>{warehouseLocation[report.report_id]}</td>
                   <td>{report.report_create_date}</td>
                   <td>{report.report_create_time}</td>
-                  <td></td>
+                  <td><button onClick={() => handleDocOpenModal()}>View</button></td>
                   <td>{report.status}</td>
                   <td>
                     {report.assign_employee_id ? (
@@ -205,6 +221,15 @@ export const Export = () => {
           </div>
         </div>
       )}
+
+      {isDocModalOpen && (
+        <div className={styles.DocModalOverlay} onClick={handleDocOverlayClick}>
+          <div className={styles.DocModal}>
+            <Export_Report/>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
