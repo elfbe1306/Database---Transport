@@ -67,6 +67,7 @@
   }
   .table_wrapper{
       overflow-x: auto;
+      position: relative;
   }
   .branch_product_table{
       width: 100%;
