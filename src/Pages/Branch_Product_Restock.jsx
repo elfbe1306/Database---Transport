@@ -14,11 +14,13 @@ export const Branch_Product_Restock = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [address, setAddress] = useState({ location: '', area: '' });
+  const [exportProduct, setExportProduct] = useState([]);
 
   useEffect(() => {
     fetchBranchName();
     fetchProductInBranch();
     fetchWarehouse();
+    fetchExportProduct();
   }, [branch_id]); 
 
   const fetchBranchName = async () => {
@@ -57,6 +59,15 @@ export const Branch_Product_Restock = () => {
       }
     }
   };
+
+  const fetchExportProduct = async () => {
+    const { data, error } = await supabase.from('export_report_has_package').select('*');
+    if(error) {
+      console.error("Error fetching Export Product" , error);
+    } else {
+      setExportProduct(data);
+    }
+  }
   
 
   const handleSearchChange = (e) => {
@@ -300,26 +311,35 @@ export const Branch_Product_Restock = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map(pkg => (
-                <tr key={pkg.package_id}>
-                  <td>{pkg.package_id}</td>
-                  <td>{pkg.product_name}</td>
-                  <td>{pkg.product_total}</td>
-                  <td>{pkg.category}</td>
-                  <td>{pkg.production_date}</td>
-                  <td>{pkg.expired_date}</td>
-                  <td>{pkg.product_time_left}</td>
-                  <td>{pkg.import_date}</td>
-                  <td>
-                    <input 
-                      className={styles.check_box}
-                      type="checkbox" 
-                      checked={pkg.isChecked || false}
-                      onChange={() => handleCheckboxChange(pkg.package_id, pkg.product_name, pkg.product_total)} 
-                    />
-                  </td>
-                </tr>
-              ))}
+              {filteredProducts.map(pkg => {
+                const isExported = exportProduct.some(exp => exp.package_id === pkg.package_id);
+                return (
+                  <tr key={pkg.package_id}>
+                    <td>{pkg.package_id}</td>
+                    <td>
+                      <p style={{ color: isExported ? 'red' : 'inherit',}}>
+                        {pkg.product_name}
+                      </p>
+                    </td>
+                    <td>{pkg.product_total}</td>
+                    <td>{pkg.category}</td>
+                    <td>{pkg.production_date}</td>
+                    <td>{pkg.expired_date}</td>
+                    <td>{pkg.product_time_left}</td>
+                    <td>{pkg.import_date}</td>
+                    <td>
+                      <input
+                        className={styles.check_box}
+                        type="checkbox"
+                        checked={pkg.isChecked || false}
+                        onChange={() =>
+                          handleCheckboxChange(pkg.package_id, pkg.product_name, pkg.product_total)
+                        }
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
