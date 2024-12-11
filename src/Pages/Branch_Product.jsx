@@ -80,9 +80,8 @@ export const Branch_Product = () => {
         </div>
       </div>
 
-      <div className={styles.divider}></div>
-
       <div className={styles.table_wrapper} >
+      <div className={styles.divider}></div>
         <table className={styles.branch_product_table}>
           <thead>
             <tr>

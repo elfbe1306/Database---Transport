@@ -78,9 +78,8 @@ export const Branch_List = () => {
           </div>
         </div>
 
-        <div className={styles.divider}></div>
-
         <div className={styles.table_wrapper}>
+        <div className={styles.divider}></div>
           <table className={styles.branch_table}>
             <thead>
               <tr>

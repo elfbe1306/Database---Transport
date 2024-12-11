@@ -148,9 +148,8 @@ export const Branch_Product_Restock = () => {
           </div>
         </div>
 
-        <div className={styles.divider}></div>
-
         <div className={styles.table_wrapper}>
+        <div className={styles.divider}></div>
           <table className={styles.branch_product_table}>
             <thead>
               <tr>

@@ -74,7 +74,7 @@
     margin: 3%;
 }
 .divider{
-    width: 94%;
+    width: 99.8%;
     height: 0;
     position: absolute;
     border: 1.5px #f0f0f0 solid;
@@ -82,6 +82,7 @@
 }
 .table_wrapper{
     overflow-x: auto;
+    position: relative;
 }
 .branch_product_table{
     width: 100%;
