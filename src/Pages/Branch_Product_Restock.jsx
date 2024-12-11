@@ -12,8 +12,8 @@ export const Branch_Product_Restock = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [warehouses, setWarehouses] = useState([]);
-  const [selectedWarehouse, setSelectedWarehouse] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [address, setAddress] = useState({ location: '', area: '' });
 
   useEffect(() => {
     fetchBranchName();
@@ -41,13 +41,23 @@ export const Branch_Product_Restock = () => {
   }
 
   const fetchWarehouse = async () => {
-    const { data, error } = await supabase.from('warehouse').select('w_id, w_name, w_location, w_area');
+    const { data, error } = await supabase.from('warehouse').select('w_id, w_name, w_location, w_area').eq('w_id', branch_id);
     if (error) {
       console.error('Error fetching warehouse from branch:', error);
     } else {
-      setWarehouses(data);
+      if (data.length > 0) {
+        const warehouse = data[0]; 
+        setWarehouses(data);
+        setAddress({
+          location: warehouse.w_location,
+          area: warehouse.w_area
+        });
+      } else {
+        console.error('No warehouse found for the branch');
+      }
     }
-  }
+  };
+  
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value); 
@@ -69,17 +79,6 @@ export const Branch_Product_Restock = () => {
       setFilteredProducts(filtered);
     }
   };
-
-  const handleWarehouseChange = (e) => {
-    const warehouse = e.target.value;
-    setSelectedWarehouse(warehouse);
-
-    // Find the selected warehouse information
-    const selected = warehouses.find(w => w.w_name === warehouse);
-    setAddress(selected ? { location: selected.w_location, area: selected.w_area } : {});
-  };
-
-  const [address, setAddress] = useState({ location: '', area: '' });
 
   const handleCheckboxChange = (packageId, productName, productTotal) => {
     setFilteredProducts(prevState => 
@@ -108,8 +107,6 @@ export const Branch_Product_Restock = () => {
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedWarehouse('');
-    setAddress('');
   };
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -125,7 +122,7 @@ export const Branch_Product_Restock = () => {
       console.error('Error creating report:', error);
     } else {
       console.log('Report created successfully:', data);
-      handleCloseModal(); // Close the modal
+      handleCloseModal(); 
     }
   };
 
@@ -204,30 +201,10 @@ export const Branch_Product_Restock = () => {
                 <p className={styles.ProductDisplay}>
                   {selectedProducts.map(product => (
                     <span key={product.package_id}>
-                      {product.name} (Total: {product.total})<br />
+                      {product.name}<br />
                     </span>
                   ))}
                 </p>
-              </div>
-
-              <div className={styles.FormGroup}>
-                <label className={styles.labelText}>Export to</label>
-                <select
-                  className={styles.SelectInput}
-                  value={selectedWarehouse}
-                  onChange={handleWarehouseChange}
-                >
-                  <option value="">Select a warehouse</option>
-                  {warehouses && warehouses.length > 0 ? (
-                    warehouses.map((house) => (
-                      <option key={house.w_id} value={house.w_name}>
-                        {house.w_name}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="">No warehouse available</option>
-                  )}
-                </select>
               </div>
 
               <div className={styles.FormGroup}>
