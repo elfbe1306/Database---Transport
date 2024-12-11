@@ -116,15 +116,149 @@ export const Branch_Product_Restock = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
 
-    if (error) {
-      console.error('Error creating report:', error);
-    } else {
-      console.log('Report created successfully:', data);
-      handleCloseModal(); 
+    try {
+        // Generate new report_id with format EX####
+        const { data: existingReports, error: reportError } = await supabase
+            .from('report')
+            .select('report_id');
+
+        if (reportError) {
+            console.error('Error fetching reports:', reportError);
+            return;
+        }
+
+        const existingIds = existingReports.map((r) => r.report_id);
+        let nextId = 1;
+
+        while (existingIds.includes(`EX${nextId.toString().padStart(4, '0')}`)) {
+            nextId++;
+        }
+
+        const reportId = `EX${nextId.toString().padStart(4, '0')}`;
+        const employeeId = 'MH1000';
+        const currentDate = new Date();
+        const reportCreateDate = currentDate.toISOString().split('T')[0];
+        const reportCreateTime = currentDate.toTimeString().split(' ')[0];
+
+        let missingProducts = []; // To track which products were not found
+        let successfullyMatchedProducts = [];
+
+        // Loop through selected products
+        for (const product of selectedProducts) {
+            // Query for matching products
+            const { data: matchingProducts, error: productError } = await supabase
+                .from('package')
+                .select('*')
+                .eq('product_name', product.name)
+                .neq('package_id', product.package_id)
+                .gt('product_time_left', 90)
+                .is('branch_id', null);
+
+            if (productError) {
+                console.error('Error fetching matching products:', productError);
+                return;
+            }
+
+            if (matchingProducts.length === 0) {
+                // If no matching products found, add to missingProducts
+                missingProducts.push(product.name);
+            } else {
+                // Add the product to successfullyMatchedProducts if it's found
+                successfullyMatchedProducts.push(product.name);
+            }
+        }
+
+        // If we found any missing products, alert the user and cancel the report creation
+        if (missingProducts.length > 0) {
+            alert(`The following products were not found: ${missingProducts.join(', ')}`);
+            return; // Cancel report creation and stop further execution
+        }
+
+        // Insert the report first to ensure it exists
+        const { data: insertedReport, error: insertReportError } = await supabase
+            .from('report')
+            .insert({
+                report_id: reportId,
+                employee_id: employeeId,
+                report_create_date: reportCreateDate,
+                report_create_time: reportCreateTime,
+                status: "Not Started"
+            })
+            .single(); // Ensure we get back a single inserted report
+
+        if (insertReportError) {
+            console.error('Error creating report:', insertReportError);
+            return;
+        }
+
+        // Insert into the export_report table
+        const { error: exportReportInsertError } = await supabase
+            .from('export_report')
+            .insert({
+                export_report_id: reportId, // Use the same reportId
+            });
+
+        if (exportReportInsertError) {
+            console.error('Error creating export report:', exportReportInsertError);
+            return;
+        }
+
+        // Now that the report is created, proceed with the update of the packages
+        for (const product of successfullyMatchedProducts) {
+            const { data: matchingProducts, error: productError } = await supabase
+                .from('package')
+                .select('*')
+                .eq('product_name', product)
+                .neq('package_id', product.package_id)
+                .gt('product_time_left', 90)
+                .is('branch_id', null);
+
+            if (productError) {
+                console.error('Error fetching matching products:', productError);
+                return;
+            }
+
+            const matchedProduct = matchingProducts.reduce((leastTimeLeft, currentProduct) =>
+                currentProduct.product_time_left < leastTimeLeft.product_time_left ? currentProduct : leastTimeLeft
+            );
+
+            // Update the matched product
+            const { error: updateError } = await supabase
+                .from('package')
+                .update({
+                    export_date: reportCreateDate,
+                    branch_id: branch_id,
+                    employee_id: employeeId,
+                })
+                .eq('package_id', matchedProduct.package_id);
+
+            if (updateError) {
+                console.error('Error updating package:', updateError);
+                return;
+            }
+
+            // Insert into export_report_has_package to associate report_id with package_id
+            const { error: insertPackageError } = await supabase
+                .from('export_report_has_package')
+                .insert({
+                    export_report_id: reportId, // Use the reportId from the inserted report
+                    package_id: matchedProduct.package_id
+                });
+
+            if (insertPackageError) {
+                console.error('Error inserting into export_report_has_package:', insertPackageError);
+                return;
+            }
+        }
+
+        alert('Report and packages created successfully:', reportId);
+        handleCloseModal(); // Close the modal after successful creation
+    } catch (err) {
+        console.error('Error in handleSubmit:', err);
     }
   };
+
 
   return (
     <div>
