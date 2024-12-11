@@ -1,11 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Header } from '../components/Header'
 import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
+import supabase from '../supabase-client'
+
 export const Export = () => {
+  const [exportReport, setExportReport] = useState([]);
+
+  useEffect(() => {
+    fetchExportReport();
+    fetchTesting();
+  }, []);
+
+  const fetchExportReport = async () => {
+    const { data, error } = await supabase.from('report').select('*').like('report_id', 'EX%');
+    if(error) {
+      console.error('Error fetching export report:', error);
+    } else {
+      setExportReport(data);
+    }
+  }
+
   return (
     <div>
     <Header></Header>
+    
     <div className={styles.Content}>
       <div className={styles.Wrapper}>
         <div className={styles.TableName}>EXPORT</div>
@@ -27,17 +46,25 @@ export const Export = () => {
             <tr>
               <th>Report's ID</th>
               <th>Destination</th>
+              <th>Create Date</th>
+              <th>Create Time</th>
               <th>Status</th>
               <th>Assign</th>
             </tr>
           </thead>
           <tbody>
-              <td>RP1001</td>
-              <td>Kho Phú Nhuận</td>
-              <td>not started yet</td>
-              <td>
-                <button className={styles.plus_button}>+</button>
-              </td>
+            {exportReport.map((report) => (
+              <tr key={report.report_id}>
+                <td>{report.report_id}</td>
+                <td>Warehouse Location</td>
+                <td>{report.report_create_date}</td>
+                <td>{report.report_create_time}</td>
+                <td>{report.status}</td>
+                <td>
+                  <button className={styles.plus_button}>+</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
