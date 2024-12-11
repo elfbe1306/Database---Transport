@@ -63,7 +63,9 @@ export const Product = () => {
     if (error) {
       console.error('Error getting categories:', error);
     } else {
-      setCategories(data);
+      const uniqueCategories = Array.from(new Set(data.map(cat => cat.category_name)))
+      .map(name => data.find(cat => cat.category_name === name));
+      setCategories(uniqueCategories);
     }
   };
 
