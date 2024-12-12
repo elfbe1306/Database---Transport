@@ -192,12 +192,35 @@
 
 .DocModal {
   background: #FFF;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 1000px;
+  width: 1100px;
   max-width: 100%;
   max-height: 90%; /* Set a max height for the modal */
   overflow-y: auto; /* Enable scrolling if content overflows */
   min-height: 500px;
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  align-items: center; /* Center content horizontally */
+}
+
+.ButtonContainer {
+  margin-top: 20px; /* Add space between the content and button */
+}
+
+.ButtonContainer button {
+  background-color: #007bff; /* Adjust color as desired */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ButtonContainer button:hover {
+  background-color: #0056b3; /* Darker color on hover */
+}
+.Export_Report {
+  width: 100%;
 }

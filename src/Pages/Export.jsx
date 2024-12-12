@@ -4,6 +4,8 @@ import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
 import supabase from '../supabase-client'
 import { Export_Report } from '../components/Export_Report';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 export const Export = () => {
   const [exportReport, setExportReport] = useState([]);
@@ -14,6 +16,7 @@ export const Export = () => {
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState("");
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetchExportReport();
@@ -34,7 +37,7 @@ export const Export = () => {
   const fetchingWarehouseAddress = async () => {
     const { data, error } = await supabase
       .from('export_report_has_package')
-      .select('export_report_id, package(package_id, branch_warehouse(branch_id, warehouse(w_location, w_area)))');
+      .select('export_report_id, package(package_id, branch_warehouse(branch_id, warehouse(w_location, w_area, w_name)))');
     if (error) {
       console.error('Error fetching warehouse locations:', error);
     } else {
@@ -43,7 +46,14 @@ export const Export = () => {
         const reportId = item.export_report_id;
         const location = item.package?.branch_warehouse?.warehouse?.w_location || 'Unknown Location';
         const area = item.package?.branch_warehouse?.warehouse?.w_area || 'Unknown Area';
-        locationMap[reportId] = `${location} - ${area}`;
+        const warehouse = item.package?.branch_warehouse?.warehouse;
+        const name = warehouse?.w_name || 'Unknown Name';
+        
+        locationMap[reportId] = {
+          location,
+          area,
+          name,
+        };
       });
       setWarehouseLocation(locationMap);
     }
@@ -115,8 +125,10 @@ export const Export = () => {
     }
   };
 
-  const handleDocOpenModal = () => {
+  const handleDocOpenModal = (reportId) => {
     setIsDocModalOpen(true);
+    fetchProductsForReport(reportId);
+    setSelectedReportId(reportId);
   };
 
   const handleDocCloseModal = () => {
@@ -126,6 +138,45 @@ export const Export = () => {
   const handleDocOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       handleDocCloseModal();
+    }
+  };
+
+  const fetchProductsForReport = async (reportId) => {
+    const { data, error } = await supabase.from('export_report_has_package').select('*, package(package_id, product_name, product_total)').eq('export_report_id', reportId);
+  
+    if (error) {
+      console.error('Error fetching products:', error);
+    } else {
+      setProducts(data);
+    }
+  };
+
+  const printRef = React.useRef(null);
+  const handleDownloadPdf = async () => {
+    const element = printRef.current;
+    if (!element) {
+      console.error("Element to print not found.");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(element);
+      const data = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: 'a4',
+      });
+
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('Export_Report.pdf');
+    } catch (error) {
+      console.error("Error generating PDF:", error);
     }
   };
 
@@ -154,6 +205,7 @@ export const Export = () => {
               <tr>
                 <th>Report's ID</th>
                 <th>Destination</th>
+                <th>Address</th>
                 <th>Create Date</th>
                 <th>Create Time</th>
                 <th>View</th>
@@ -162,30 +214,34 @@ export const Export = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredReports.map((report) => (
-                <tr key={report.report_id}>
-                  <td>{report.report_id}</td>
-                  <td>{warehouseLocation[report.report_id]}</td>
-                  <td>{report.report_create_date}</td>
-                  <td>{report.report_create_time}</td>
-                  <td><button onClick={() => handleDocOpenModal()}>View</button></td>
-                  <td>{report.status}</td>
-                  <td>
-                    {report.assign_employee_id ? (
-                      <button className={styles.assigned_button} disabled>
-                        {drivers.find((d) => d.e_id === report.assign_employee_id)?.e_fullname || "Assigned"}
-                      </button>
-                    ) : (
-                      <button
-                        className={styles.plus_button}
-                        onClick={() => handleOpenModal(report.report_id)}
-                      >
-                        +
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {filteredReports.map((report) => {
+                const warehouseInfo = warehouseLocation[report.report_id] || {};
+                return (
+                  <tr key={report.report_id}>
+                    <td>{report.report_id}</td>
+                    <td>{warehouseInfo.name}</td>
+                    <td>{`${warehouseInfo.location} - ${warehouseInfo.area}`}</td>
+                    <td>{report.report_create_date}</td>
+                    <td>{report.report_create_time}</td>
+                    <td><button onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
+                    <td>{report.status}</td>
+                    <td>
+                      {report.assign_employee_id ? (
+                        <button className={styles.assigned_button} disabled>
+                          {drivers.find((d) => d.e_id === report.assign_employee_id)?.fullname || "Assigned"}
+                        </button>
+                      ) : (
+                        <button
+                          className={styles.plus_button}
+                          onClick={() => handleOpenModal(report.report_id)}
+                        >
+                          +
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -225,7 +281,23 @@ export const Export = () => {
       {isDocModalOpen && (
         <div className={styles.DocModalOverlay} onClick={handleDocOverlayClick}>
           <div className={styles.DocModal}>
-            <Export_Report/>
+            <div className={styles.Export_Report} ref={printRef}>
+              <Export_Report
+                driverFullName={
+                  drivers.find(
+                    (d) =>
+                      d.e_id ===
+                      exportReport.find((report) => report.report_id === selectedReportId)?.assign_employee_id
+                  )?.fullname || "Unassigned"
+                }
+                warehouseName={warehouseLocation[selectedReportId]?.name || "Unknown"}
+                warehouseLocation={warehouseLocation[selectedReportId]?.location || "Unknown"}
+                products={products}
+              />
+            </div>
+            <div className={styles.ButtonContainer}>
+              <button onClick={handleDownloadPdf}>Download PDF</button>
+            </div>
           </div>
         </div>
       )}
