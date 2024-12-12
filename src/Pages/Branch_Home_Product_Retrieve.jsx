@@ -13,7 +13,7 @@ export const Branch_Home_Product_Retrieve = () =>{
     };
     
     return (
-        <div>
+      <div>
         <Branch_Header></Branch_Header>
         <div className={styles.Content}>
             <div className={styles.Wrapper}>

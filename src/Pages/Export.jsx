@@ -4,6 +4,7 @@ import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
 import supabase from '../supabase-client'
 import { Export_Report } from '../components/Export_Report';
+import { QRCode } from '../components/QRCode';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -14,6 +15,7 @@ export const Export = () => {
   const [drivers, setDrivers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState("");
   const [products, setProducts] = useState([]);
@@ -192,6 +194,18 @@ export const Export = () => {
     }
   };
 
+  const handleQROpenModal = () => {
+    setIsQRModalOpen(true);
+  };
+  const handleQRCloseModal = () => {
+    setIsQRModalOpen(false);
+  };
+  const handleQROverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleQRCloseModal();
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -220,6 +234,7 @@ export const Export = () => {
                 <th>Address</th>
                 <th>Create Date</th>
                 <th>Create Time</th>
+                <th>QR</th>
                 <th>View</th>
                 <th>Status</th>
                 <th>Assign</th>
@@ -235,6 +250,7 @@ export const Export = () => {
                     <td>{`${warehouseInfo.location} - ${warehouseInfo.area}`}</td>
                     <td>{report.report_create_date}</td>
                     <td>{report.report_create_time}</td>
+                    <td><button className={styles.ViewButton} onClick={() => handleQROpenModal()}>QR</button></td>
                     <td><button className={styles.ViewButton} onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
                     <td>{report.status}</td>
                     <td>
@@ -310,6 +326,19 @@ export const Export = () => {
             </div>
             <div className={styles.ButtonContainer}>
               <button onClick={handleDownloadPdf}>Download PDF</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isQRModalOpen && (
+        <div className={styles.QRModalOverlay} onClick={handleQROverlayClick}>
+          <div className={styles.QRModal}>
+            <div className={styles.QR_Paper}>
+              <QRCode/>
+            </div>
+            <div className={styles.ButtonContainer}>
+              <button>Download PDF</button>
             </div>
           </div>
         </div>
