@@ -46,7 +46,10 @@
     font-weight: 500;
     color: #FFF;
     cursor: pointer;
-    text-align: center;
+    /* text-align: center; */
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center;
   }
 .search_input_box {
       display: flex;
