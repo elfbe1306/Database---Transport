@@ -4,7 +4,7 @@ import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
 import supabase from '../supabase-client'
 import { Export_Report } from '../components/Export_Report';
-import { QRCode } from '../components/QRCode';
+import { QRCodeProduct } from '../components/QRCodeProduct';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -194,7 +194,8 @@ export const Export = () => {
     }
   };
 
-  const handleQROpenModal = () => {
+  const handleQROpenModal = (reportId) => {
+    fetchProductsForReport(reportId); // Dùng khé khỏi tạo thêm useState();
     setIsQRModalOpen(true);
   };
   const handleQRCloseModal = () => {
@@ -250,7 +251,7 @@ export const Export = () => {
                     <td>{`${warehouseInfo.location} - ${warehouseInfo.area}`}</td>
                     <td>{report.report_create_date}</td>
                     <td>{report.report_create_time}</td>
-                    <td><button className={styles.ViewButton} onClick={() => handleQROpenModal()}>QR</button></td>
+                    <td><button className={styles.ViewButton} onClick={() => handleQROpenModal(report.report_id)}>QR</button></td>
                     <td><button className={styles.ViewButton} onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
                     <td>{report.status}</td>
                     <td>
@@ -335,7 +336,7 @@ export const Export = () => {
         <div className={styles.QRModalOverlay} onClick={handleQROverlayClick}>
           <div className={styles.QRModal}>
             <div className={styles.QR_Paper}>
-              <QRCode/>
+              <QRCodeProduct products = {products}/>
             </div>
             <div className={styles.ButtonContainer}>
               <button>Download PDF</button>
