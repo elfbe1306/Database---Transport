@@ -132,7 +132,7 @@ export const Export = () => {
     setIsDocModalOpen(true);
     fetchProductsForReport(reportId);
     setSelectedReportId(reportId);
-    fetchReportCreateData(reportId);
+    fetchReportCreateData();
   };
 
   const handleDocCloseModal = () => {
@@ -155,7 +155,7 @@ export const Export = () => {
     }
   };
 
-  const fetchReportCreateData = async (reportId) => {
+  const fetchReportCreateData = async () => {
     const {data, error} = await supabase.from('export_report_has_package').select('*, export_report(export_report_id, report(report_id, report_create_date))');
 
     if(error) {
