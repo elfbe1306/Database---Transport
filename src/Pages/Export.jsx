@@ -17,6 +17,7 @@ export const Export = () => {
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState("");
   const [products, setProducts] = useState([]);
+  const [reportCreateDate, setReportCreateDate] = useState();
 
   useEffect(() => {
     fetchExportReport();
@@ -129,6 +130,7 @@ export const Export = () => {
     setIsDocModalOpen(true);
     fetchProductsForReport(reportId);
     setSelectedReportId(reportId);
+    fetchReportCreateData(reportId);
   };
 
   const handleDocCloseModal = () => {
@@ -150,6 +152,16 @@ export const Export = () => {
       setProducts(data);
     }
   };
+
+  const fetchReportCreateData = async (reportId) => {
+    const {data, error} = await supabase.from('export_report_has_package').select('*, export_report(export_report_id, report(report_id, report_create_date))');
+
+    if(error) {
+      console.error('Error fetching report create date:', error);
+    } else {
+      setReportCreateDate(data[0]);
+    }
+  }
 
   const printRef = React.useRef(null);
   const handleDownloadPdf = async () => {
@@ -293,6 +305,7 @@ export const Export = () => {
                 warehouseName={warehouseLocation[selectedReportId]?.name || "Unknown"}
                 warehouseLocation={warehouseLocation[selectedReportId]?.location || "Unknown"}
                 products={products}
+                reportCreateDate={reportCreateDate?.export_report?.report?.report_create_date}
               />
             </div>
             <div className={styles.ButtonContainer}>
