@@ -38,7 +38,7 @@
   }
 .Retrieve {
     width: 100px;
-    height: 20px;
+    height: 28px;
     border-radius: 15px;
     border: none;
     background: #4A628A;
@@ -47,9 +47,6 @@
     color: #FFF;
     cursor: pointer;
     text-align: center;
-    text-decoration: none;
-    padding-top: 5px;
-    padding-bottom: 5px;
   }
 .search_input_box {
       display: flex;
@@ -61,14 +58,26 @@
       border-radius: 20px;
   }
 .search_input {
+      width: 150px;
       border: none;
       border-radius: 20px;
       background: rgba(240, 240, 240, 0.59);
     }
-    .search_input:focus {
-      outline: none;
-      border: none;
-    }
+.search_input:focus {
+  outline: none;
+  border: none;
+}
+.UpdateProductTimeLeftButton {
+  width: 150px;
+  height: 28px;
+  border-radius: 15px;
+  border: none;
+  background: #4A628A;
+  font-family: Roboto;
+  font-weight: 500;
+  color: #FFF;
+  cursor: pointer;
+}
 .icon{
       font-size: 14px;
       margin: 3%;
