@@ -1,18 +1,22 @@
 import React from 'react'
+import styles from '../Styles/QRCode.module.css'
 
 export const QRCode = () => {
   return (
-    <div>
-      <table>
-        <tr>
-          <th>Product</th>
-          <th>QR Image</th>
+    <div className={styles.tableWrapper}>
+      <table className={styles.tableQR}>
+        <thead>
+          <tr>
+            <th className={styles.product}>Product</th>
+            <th className={styles.QRi}>QR Image</th>
         </tr>
-
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>hhhdshfdjfhsdjfhsdjfhdsjfhdsjhfdshfdshfdjhfjdhfds</td>
+            <td>hhhfhsdjkfhjkdfhdsjkfhh</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   )
