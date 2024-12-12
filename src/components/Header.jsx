@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from '../Styles/Header.module.css'
 import {Link} from 'react-router-dom';
+import { FaRegBell } from "react-icons/fa";
 
 export const Header = () => {
   return (
@@ -12,6 +13,10 @@ export const Header = () => {
         <Link to="/dashboard/branch" className={styles.NaviText}>Branch</Link>
         <Link to="/dashboard/stock" className={styles.NaviText}>Stock</Link>
         <Link to="" className={styles.NaviText}>Report</Link>
+      </div>
+      <div className={styles.Date_andIcon}> 
+        <div className={styles.Date}>Thu 5 Dec 2024</div>
+        <FaRegBell className={styles.icon} />
       </div>
     </div>
   )
