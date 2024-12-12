@@ -20,8 +20,20 @@ export const Login = () => {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      console.log('Login successful', data);
-      navigate('/dashboard');
+      const {data, error} = await supabase.from('employee').select('e_id').eq('e_email', email).single();
+
+      if(error) {
+        console.error('Error fetching email:', error);
+      } 
+      else {
+        if(data?.e_id?.startsWith('MH')) {
+          console.log('Login successful', data);
+          navigate('/dashboard');
+        } 
+        else {
+          navigate('/branch-product');
+        }
+      }
     }
   };
 
