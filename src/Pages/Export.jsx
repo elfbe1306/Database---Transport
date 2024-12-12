@@ -4,7 +4,7 @@ import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
 import supabase from '../supabase-client'
 import { Export_Report } from '../components/Export_Report';
-import { QRCode } from '../components/QRCode';
+import { QRCodeProduct } from '../components/QRCodeProduct';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -132,7 +132,7 @@ export const Export = () => {
     setIsDocModalOpen(true);
     fetchProductsForReport(reportId);
     setSelectedReportId(reportId);
-    fetchReportCreateData(reportId);
+    fetchReportCreateData();
   };
 
   const handleDocCloseModal = () => {
@@ -155,7 +155,7 @@ export const Export = () => {
     }
   };
 
-  const fetchReportCreateData = async (reportId) => {
+  const fetchReportCreateData = async () => {
     const {data, error} = await supabase.from('export_report_has_package').select('*, export_report(export_report_id, report(report_id, report_create_date))');
 
     if(error) {
@@ -194,7 +194,8 @@ export const Export = () => {
     }
   };
 
-  const handleQROpenModal = () => {
+  const handleQROpenModal = (reportId) => {
+    fetchProductsForReport(reportId); // Dùng khé khỏi tạo thêm useState();
     setIsQRModalOpen(true);
   };
   const handleQRCloseModal = () => {
@@ -203,6 +204,35 @@ export const Export = () => {
   const handleQROverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       handleQRCloseModal();
+    }
+  };
+
+  const printRefQR = React.useRef(null);
+  const handleDownloadPdfQR = async () => {
+    const element = printRefQR.current;
+    if (!element) {
+      console.error("Element to print not found.");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(element);
+      const data = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: 'a4',
+      });
+
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('QRCode.pdf');
+    } catch (error) {
+      console.error("Error generating PDF:", error);
     }
   };
 
@@ -250,7 +280,7 @@ export const Export = () => {
                     <td>{`${warehouseInfo.location} - ${warehouseInfo.area}`}</td>
                     <td>{report.report_create_date}</td>
                     <td>{report.report_create_time}</td>
-                    <td><button className={styles.ViewButton} onClick={() => handleQROpenModal()}>QR</button></td>
+                    <td><button className={styles.ViewButton} onClick={() => handleQROpenModal(report.report_id)}>QR</button></td>
                     <td><button className={styles.ViewButton} onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
                     <td>{report.status}</td>
                     <td>
@@ -334,11 +364,11 @@ export const Export = () => {
       {isQRModalOpen && (
         <div className={styles.QRModalOverlay} onClick={handleQROverlayClick}>
           <div className={styles.QRModal}>
-            <div className={styles.QR_Paper}>
-              <QRCode/>
+            <div className={styles.QR_Paper} ref={printRefQR}>
+              <QRCodeProduct products = {products}/>
             </div>
             <div className={styles.ButtonContainer}>
-              <button>Download PDF</button>
+              <button onClick={handleDownloadPdfQR}>Download PDF</button>
             </div>
           </div>
         </div>

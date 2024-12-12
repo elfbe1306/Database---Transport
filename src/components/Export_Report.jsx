@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import styles from '../Styles/Export_Report.module.css'
 
 export const Export_Report = (props) => {
-  console.log(props)
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -67,8 +65,8 @@ export const Export_Report = (props) => {
           <td></td>
         </tr>
         <tr>
-          <td>Nguyễn Văn C</td>
-          <td>Nguyễn Văn B</td>
+          <td>Huỳnh Ngọc Nhơn</td>
+          <td>{props.driverFullName}</td>
         </tr>
       </table>
     </div>

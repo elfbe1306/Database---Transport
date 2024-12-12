@@ -6,36 +6,65 @@ import supabase from '../supabase-client';
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [branchID, setBranchID] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+
+  // Fetch employee's branch information
+  const fetchEmployeeBranch = async (employeeID) => {
+    const { data, error } = await supabase.from('warehouse').select('w_id').eq('supervisor_id', employeeID).single();
+    if (error) {
+      console.error('Error fetching Employee Branch:', error);
+      setErrorMessage('Error fetching branch information.');
+    } else {
+      setBranchID(data?.w_id);
+      console.log('Branch ID:', data?.w_id);
+    }
+  };
 
   const login = async (event) => {
     event.preventDefault();
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    // Sign in with email and password
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
-    if (error) {
-      setErrorMessage(error.message);
-    } else {
-      const {data, error} = await supabase.from('employee').select('e_id').eq('e_email', email).single();
+    if (signInError) {
+      setErrorMessage(signInError.message); // Display sign-in error message
+      return;
+    }
 
-      if(error) {
-        console.error('Error fetching email:', error);
-      } 
-      else {
-        if(data?.e_id?.startsWith('MH')) {
-          console.log('Login successful', data);
-          navigate('/dashboard');
-        } 
-        else {
-          navigate('/branch-product');
-        }
+    // Fetch employee data
+    const { data: employeeData, error: employeeError } = await supabase
+      .from('employee')
+      .select('e_id')
+      .eq('e_email', email)
+      .single();
+
+    if (employeeError) {
+      console.error('Error fetching employee data:', employeeError);
+      setErrorMessage('Error fetching employee data.');
+      return;
+    }
+
+    // Fetch branch information for the employee
+    fetchEmployeeBranch(employeeData?.e_id);
+
+    // Wait for branchID to be fetched before navigating
+    if (employeeData?.e_id?.startsWith('MH')) {
+      console.log('Login successful', employeeData);
+      navigate('/dashboard');
+    } else {
+      if (branchID) {
+        navigate(`/branch-product/${branchID}`);
+      } else {
+        setErrorMessage('Branch information not found.');
       }
     }
   };
+
 
   return (
     <div className={styles.LoginPageContainer}>
