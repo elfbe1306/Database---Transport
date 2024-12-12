@@ -67,8 +67,8 @@ export const Export_Report = (props) => {
           <td></td>
         </tr>
         <tr>
-          <td>Nguyễn Văn C</td>
-          <td>Nguyễn Văn B</td>
+          <td>Huỳnh Ngọc Nhơn</td>
+          <td>{props.driverFullName}</td>
         </tr>
       </table>
     </div>

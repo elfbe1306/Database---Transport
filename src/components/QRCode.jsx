@@ -10,8 +10,8 @@ export const QRCode = () => {
         </tr>
 
         <tr>
-          <td></td>
-          <td></td>
+          <td>Hi</td>
+          <td>World</td>
         </tr>
       </table>
     </div>
