@@ -58,7 +58,7 @@ export const Branch_Header = () => {
         
         <div className={styles.accountWrapper}>
           <div className={styles.accountRole}>
-            <div className={styles.accountName}>Đỗ Mỹ Quyên</div>
+            <div className={styles.accountName}>Đo My Quyen</div>
             <div className={styles.accountDes}>Branch's Manager</div>
             {isOpen && (
               <div className={styles.dropdown}>

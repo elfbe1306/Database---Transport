@@ -59,7 +59,7 @@ export const Header = () => {
         
         <div className={styles.accountWrapper}>
           <div className={styles.accountRole}>
-            <div className={styles.accountName}> Huỳnh Ngọc Nhơn</div>
+            <div className={styles.accountName}> Huynh Ngoc Nhon</div>
             <div className={styles.accountDes}> Manager</div>
             {isOpen && (
               <div className={styles.dropdown}>
