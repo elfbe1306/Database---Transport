@@ -207,6 +207,35 @@ export const Export = () => {
     }
   };
 
+  const printRefQR = React.useRef(null);
+  const handleDownloadPdfQR = async () => {
+    const element = printRefQR.current;
+    if (!element) {
+      console.error("Element to print not found.");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(element);
+      const data = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: 'a4',
+      });
+
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('QRCode.pdf');
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -335,11 +364,11 @@ export const Export = () => {
       {isQRModalOpen && (
         <div className={styles.QRModalOverlay} onClick={handleQROverlayClick}>
           <div className={styles.QRModal}>
-            <div className={styles.QR_Paper}>
+            <div className={styles.QR_Paper} ref={printRefQR}>
               <QRCodeProduct products = {products}/>
             </div>
             <div className={styles.ButtonContainer}>
-              <button>Download PDF</button>
+              <button onClick={handleDownloadPdfQR}>Download PDF</button>
             </div>
           </div>
         </div>
