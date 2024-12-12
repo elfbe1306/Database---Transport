@@ -31,9 +31,8 @@ function App() {
         <Route path="/branch-status" element={<PrivateRoute> <Branch_Home_Status/> </PrivateRoute>}/>
       </Routes>
     </div>
-      <Modal></Modal>
-    </>
   );
-};
+}
 
 export default App;
+

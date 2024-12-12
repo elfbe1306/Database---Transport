@@ -1,0 +1,21 @@
+.tableWrapper{
+    justify-items: center;
+    padding: 20px;
+}
+.tableQR{
+    border-collapse: collapse;
+    text-align: center;
+}
+.tableQR th,
+.tableQR td{
+  border: 2px solid black;
+  padding: 10px;
+  height: 20px
+}
+
+.tableQR .product{
+    width: 50%;
+}
+.tableQR .QRi {
+    width: 50%;
+}

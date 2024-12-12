@@ -1,0 +1,50 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('../assets/fonts/Roboto-Regular.ttf');
+}
+
+.Header {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  background: #FFFFE8;
+  padding: 10px 0px;
+  font-family: 'Roboto';
+}
+.Navi{
+    display: flex;
+    margin: 40px;
+    align-items: flex-start;
+    gap: 50px;
+}
+.NaviText {
+    color: #4A628A;
+    text-align: center;
+    font-family: 'Roboto';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration: none;
+}
+.Date_andIcon {
+  display: flex;
+  margin: 40px;
+  margin-left: 22%;
+  gap: 20px
+}
+.Date{
+  color: #4A628A;
+  text-align: center;
+  font-family: 'Roboto';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  text-decoration: none;
+}
+.icon {
+  width: 30px;
+  height: 20px;
+  color: #4A628A;
+  
+}

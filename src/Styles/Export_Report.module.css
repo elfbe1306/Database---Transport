@@ -1,0 +1,102 @@
+.container {
+  margin: 25.4mm;
+  background-color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+.header div{
+  padding: 5px;
+}
+
+.header .company{
+  text-align: left;
+  width: 20%;
+}
+
+.header .company .company_name{
+  font-weight: bold;
+}
+.header .company .city{
+  font-weight: light;
+  font-style: italic;
+}
+
+.header .title {
+  width: 45%;
+  text-align: center;
+}
+.header .title .text{
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.header .title .details .date{
+  font-weight: light;
+  font-style: italic;
+}
+
+
+.header .form_info {
+  width: 25%;
+  font-size: 0.9em;
+  text-align: center;
+}
+.header .form_info .form_no{
+  font-size: small;
+  font-weight: bold;
+  font-style: italic;
+}
+.header .form_info .form_text{
+  font-size: x-small;
+}
+
+
+.info_table {
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-left: 15%;
+}
+
+.info_table td {
+  padding: 8px;
+  text-align: left;
+}
+
+.product_table{
+  text-align: center;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.product_table th,
+.product_table td{
+  border: 2px solid black;
+  padding: 8px;
+  height: 20px
+}
+.product_table .brand_name{
+  width: 35%;
+}
+.product_table .id{
+  width: 30%;
+}
+.product_table .unit{
+  width: 15%;
+}
+.product_table .quantity{
+  width: 15%;
+}
+
+.signature{
+  text-align: center;
+  border-collapse: collapse;
+  margin-top: 50px;
+  width: 100%;
+  justify-self: center;
+
+}
+.signature td{
+  padding: 8px;
+  height: 70px
+}
