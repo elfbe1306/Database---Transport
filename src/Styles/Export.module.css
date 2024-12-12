@@ -191,7 +191,7 @@
 }
 
 .DocModal {
-  background: #FFF;
+  background-color: #FFFFE8;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -210,7 +210,7 @@
 }
 
 .ButtonContainer button {
-  background-color: #007bff; /* Adjust color as desired */
+  background-color: #4A628A; /* Adjust color as desired */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -222,5 +222,17 @@
   background-color: #0056b3; /* Darker color on hover */
 }
 .Export_Report {
+  background-color: #FFF;
   width: 100%;
+}
+
+.ViewButton {
+  background-color: #4A628A;
+  width: 50px;
+  height: 22px;
+  border: none;
+  border-radius: 10px;
+  color: #FFF;
+  font-family: Roboto;
+  cursor: pointer;
 }

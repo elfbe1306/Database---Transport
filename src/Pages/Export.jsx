@@ -235,7 +235,7 @@ export const Export = () => {
                     <td>{`${warehouseInfo.location} - ${warehouseInfo.area}`}</td>
                     <td>{report.report_create_date}</td>
                     <td>{report.report_create_time}</td>
-                    <td><button onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
+                    <td><button className={styles.ViewButton} onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
                     <td>{report.status}</td>
                     <td>
                       {report.assign_employee_id ? (
