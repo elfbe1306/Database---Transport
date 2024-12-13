@@ -47,6 +47,7 @@
     color: #FFF;
     cursor: pointer;
     text-align: center;
+    text-decoration: none;
   }
 .search_input_box {
       display: flex;
