@@ -93,7 +93,6 @@ export const Branch_Product = () => {
               <th>Expired Date</th>
               <th>Time Left</th>
               <th>Imported Date</th>
-              <th>Exported Date</th>
             </tr>
           </thead>
           <tbody>
@@ -107,7 +106,6 @@ export const Branch_Product = () => {
                 <td>{pkg.expired_date}</td>
                 <td>{pkg.product_time_left}</td>
                 <td>{pkg.import_date}</td>
-                <td>{pkg.export_date}</td>
               </tr>
             ))}
           </tbody>
