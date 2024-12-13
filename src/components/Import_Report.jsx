@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import styles from '../Styles/Export_Report.module.css'
+import styles from '../Styles/Import_Report.module.css'
 
 export const Import_Report = (props) => {
   return (
@@ -58,6 +58,7 @@ export const Import_Report = (props) => {
       <table className={styles.signature}>
         <tr>
           <td>NGƯỜI LẬP PHIẾU</td>
+          <td>NGƯỜI GIAO HÀNG</td>
           <td>NGƯỜI NHẬN HÀNG</td>
         </tr>
         <tr>
@@ -66,6 +67,7 @@ export const Import_Report = (props) => {
         </tr>
         <tr>
           <td>Huỳnh Ngọc Nhơn</td>
+          <td>{props.driverFullName}</td>
           <td>{props.receiverFullname}</td>
         </tr>
       </table>

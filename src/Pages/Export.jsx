@@ -419,6 +419,13 @@ export const Export = () => {
             <div className={styles.Export_Report} ref={printIRRef}>
               <Import_Report
                 receiverFullname= {warehouseLocation[selectedReportId]?.e_name || "Unknown"}
+                driverFullName={
+                  drivers.find(
+                    (d) =>
+                      d.e_id ===
+                      exportReport.find((report) => report.report_id === selectedReportId)?.assign_employee_id
+                  )?.fullname || "Unassigned"
+                }
                 warehouseName={warehouseLocation[selectedReportId]?.name || "Unknown"}
                 warehouseLocation={warehouseLocation[selectedReportId]?.location || "Unknown"}
                 products={products}
