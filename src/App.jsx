@@ -27,7 +27,7 @@ function App() {
         <Route path="/dashboard/stock" element={<PrivateRoute> <Stock/> </PrivateRoute>}/>
 
         <Route path="/branch-product/:branch_id" element={<PrivateRoute> <Branch_Home_Product/> </PrivateRoute>}/>
-        <Route path="/branch-product-retrieve" element={<PrivateRoute> <Branch_Home_Product_Retrieve/> </PrivateRoute>}/>
+        <Route path="/branch-product/:branch_id/branch-product-retrieve" element={<PrivateRoute> <Branch_Home_Product_Retrieve/> </PrivateRoute>}/>
         <Route path="/branch-status" element={<PrivateRoute> <Branch_Home_Status/> </PrivateRoute>}/>
       </Routes>
     </div>

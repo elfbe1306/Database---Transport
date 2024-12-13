@@ -4,6 +4,7 @@ import styles from '../Styles/Branch_Home_Product.module.css';
 import { Branch_Header } from '../components/Branch_Header';
 import { useParams } from 'react-router-dom';
 import supabase from '../supabase-client';
+import { Link } from 'react-router-dom';
 
 export const Branch_Home_Product = () => {
     const { branch_id } = useParams();
@@ -80,7 +81,7 @@ export const Branch_Home_Product = () => {
 							<button className={styles.UpdateProductTimeLeftButton} onClick={handleProductTimeLeft}>
 								Update Time Left
 							</button>
-							<div className={styles.Retrieve}>Retrieve</div>
+              <Link to={`/branch-product/${branch_id}/branch-product-retrieve`} className={styles.Retrieve}>Retrieve</Link>
 							<div className={styles.search_input_box}>
 							<TfiSearch className={styles.icon} />
 							<input
