@@ -26,7 +26,7 @@ export const Import_Report = (props) => {
 
       <table className={styles.info_table}>
         <tr>
-          <td>Họ và tên người giao: {props.driverFullName}</td>
+          <td>Họ và tên người nhận: {props.receiverFullname}</td>
         </tr>
         <tr>
           <td>Nhập tại kho: {props.warehouseName}</td>

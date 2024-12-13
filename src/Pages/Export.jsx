@@ -257,6 +257,35 @@ export const Export = () => {
     }
   };
 
+  const printIRRef = React.useRef(null);
+  const handleDownloadIRPdf = async () => {
+    const element = printIRRef.current;
+    if (!element) {
+      console.error("Element to print not found.");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(element);
+      const data = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: 'a4',
+      });
+
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('Import_Report.pdf');
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -387,7 +416,7 @@ export const Export = () => {
       {isIRModalOpen && (
         <div className={styles.DocModalOverlay} onClick={handleIROverlayClick}>
           <div className={styles.DocModal}>
-            <div className={styles.Export_Report} ref={printRef}>
+            <div className={styles.Export_Report} ref={printIRRef}>
               <Import_Report
                 receiverFullname= {warehouseLocation[selectedReportId]?.e_name || "Unknown"}
                 warehouseName={warehouseLocation[selectedReportId]?.name || "Unknown"}
@@ -397,7 +426,7 @@ export const Export = () => {
               />
             </div>
             <div className={styles.ButtonContainer}>
-              <button onClick={handleDownloadPdf}>Download PDF</button>
+              <button onClick={handleDownloadIRPdf}>Download PDF</button>
             </div>
           </div>
         </div>
