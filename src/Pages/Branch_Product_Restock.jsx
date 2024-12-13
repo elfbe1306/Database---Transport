@@ -61,7 +61,7 @@ export const Branch_Product_Restock = () => {
   };
 
   const fetchExportProduct = async () => {
-    const { data, error } = await supabase.from('export_report_has_package').select('*');
+    const { data, error } = await supabase.from('export_report_has_package').select('*, export_report(export_report_id, report(report_id, status))');
     if(error) {
       console.error("Error fetching Export Product" , error);
     } else {
@@ -311,14 +311,18 @@ export const Branch_Product_Restock = () => {
             </thead>
             <tbody>
               {filteredProducts.map(pkg => {
-                const isExported = exportProduct.some(exp => exp.package_id === pkg.package_id);
                 return (
                   <tr key={pkg.package_id}>
                     <td>{pkg.package_id}</td>
                     <td>
-                      <p style={{ color: isExported ? 'red' : 'inherit',}}>
-                        {pkg.product_name}
-                      </p>
+                    <p style={{ 
+                      color: exportProduct.some(exp => exp.package_id === pkg.package_id && exp.export_report.report.status !== 'Completed')
+                          ? 'red'
+                          : 'black',
+                      }}
+                    >
+                      {pkg.product_name}
+                    </p>
                     </td>
                     <td>{pkg.product_total}</td>
                     <td>{pkg.category}</td>
