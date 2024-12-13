@@ -4,6 +4,7 @@ import { TfiSearch } from "react-icons/tfi";
 import styles from '../Styles/Export.module.css'
 import supabase from '../supabase-client'
 import { Export_Report } from '../components/Export_Report';
+import { Import_Report } from '../components/Import_Report';
 import { QRCodeProduct } from '../components/QRCodeProduct';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -15,6 +16,7 @@ export const Export = () => {
   const [drivers, setDrivers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [isIRModalOpen, setIsIRModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState("");
@@ -40,7 +42,7 @@ export const Export = () => {
   const fetchingWarehouseAddress = async () => {
     const { data, error } = await supabase
       .from('export_report_has_package')
-      .select('export_report_id, package(package_id, branch_warehouse(branch_id, warehouse(w_location, w_area, w_name)))');
+      .select('export_report_id, package(package_id, branch_warehouse(branch_id, warehouse(w_location, w_area, w_name, employee(e_id, fullname))))');
     if (error) {
       console.error('Error fetching warehouse locations:', error);
     } else {
@@ -51,11 +53,13 @@ export const Export = () => {
         const area = item.package?.branch_warehouse?.warehouse?.w_area || 'Unknown Area';
         const warehouse = item.package?.branch_warehouse?.warehouse;
         const name = warehouse?.w_name || 'Unknown Name';
+        const e_name = warehouse?.employee?.fullname;
         
         locationMap[reportId] = {
           location,
           area,
           name,
+          e_name,  
         };
       });
       setWarehouseLocation(locationMap);
@@ -236,6 +240,52 @@ export const Export = () => {
     }
   };
 
+  const handleIROpenModal = (reportId) => {
+    setIsIRModalOpen(true);
+    fetchProductsForReport(reportId);
+    setSelectedReportId(reportId);
+    fetchReportCreateData();
+  };
+
+  const handleIRCloseModal = () => {
+    setIsIRModalOpen(false);
+  };
+
+  const handleIROverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleIRCloseModal();
+    }
+  };
+
+  const printIRRef = React.useRef(null);
+  const handleDownloadIRPdf = async () => {
+    const element = printIRRef.current;
+    if (!element) {
+      console.error("Element to print not found.");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(element);
+      const data = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: 'a4',
+      });
+
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('Import_Report.pdf');
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -265,7 +315,8 @@ export const Export = () => {
                 <th>Create Date</th>
                 <th>Create Time</th>
                 <th>QR</th>
-                <th>View</th>
+                <th>Export Report</th>
+                <th>Import Report</th>
                 <th>Status</th>
                 <th>Assign</th>
               </tr>
@@ -282,6 +333,7 @@ export const Export = () => {
                     <td>{report.report_create_time}</td>
                     <td><button className={styles.ViewButton} onClick={() => handleQROpenModal(report.report_id)}>QR</button></td>
                     <td><button className={styles.ViewButton} onClick={() => handleDocOpenModal(report.report_id)}>View</button></td>
+                    <td><button className={styles.ViewButton} onClick={() => handleIROpenModal(report.report_id)}>View</button></td>
                     <td>{report.status}</td>
                     <td>
                       {report.assign_employee_id ? (
@@ -356,6 +408,25 @@ export const Export = () => {
             </div>
             <div className={styles.ButtonContainer}>
               <button onClick={handleDownloadPdf}>Download PDF</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isIRModalOpen && (
+        <div className={styles.DocModalOverlay} onClick={handleIROverlayClick}>
+          <div className={styles.DocModal}>
+            <div className={styles.Export_Report} ref={printIRRef}>
+              <Import_Report
+                receiverFullname= {warehouseLocation[selectedReportId]?.e_name || "Unknown"}
+                warehouseName={warehouseLocation[selectedReportId]?.name || "Unknown"}
+                warehouseLocation={warehouseLocation[selectedReportId]?.location || "Unknown"}
+                products={products}
+                reportCreateDate={reportCreateDate?.export_report?.report?.report_create_date}
+              />
+            </div>
+            <div className={styles.ButtonContainer}>
+              <button onClick={handleDownloadIRPdf}>Download PDF</button>
             </div>
           </div>
         </div>

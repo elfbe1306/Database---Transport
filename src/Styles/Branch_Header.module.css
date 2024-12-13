@@ -1,28 +1,101 @@
 @font-face {
+  font-family: 'Roboto';
+  src: url('../assets/fonts/Roboto-Regular.ttf');
+}
+
+.Header {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  background: #FFFFE8;
+  padding: 10px 0px;
+  font-family: 'Roboto';
+}
+.Navi{
+    display: flex;
+    margin: 40px;
+    align-items: flex-start;
+    gap: 50px;
+}
+.NaviText {
+    color: #4A628A;
+    text-align: center;
     font-family: 'Roboto';
-    src: url('../assets/fonts/Roboto-Regular.ttf');
-  }
-  
-  .Header {
-    width: 100%;
-    height: 100px;
-    background: #FFFFE8;
-    padding: 10px 0px;
-    font-family: 'Roboto';
-  }
-  .Navi{
-      display: flex;
-      margin: 40px;
-      align-items: flex-start;
-      gap: 50px;
-  }
-  .NaviText {
-      color: #4A628A;
-      text-align: center;
-      font-family: 'Roboto';
-      font-size: 20px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: normal;
-      text-decoration: none;
-  }
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration: none;
+}
+.Date_andIcon {
+  display: flex;
+  margin: 40px;
+  margin-left: 35%;
+  gap: 20px
+}
+.Date{
+  color: #4A628A;
+  text-align: center;
+  font-family: 'Roboto';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  text-decoration: none;
+}
+.icon{
+  margin-left: 20px;
+}
+.account {
+  display: flex;
+  align-items: flex-start;
+}
+.imghe{
+  width: 60px;
+  height: 60px;
+  border: 1px solid #D9D9D9;
+  border-radius: 10px;
+  margin-left: 5px;
+  margin-top: 17px;
+}
+.accountName {
+  margin-top: 25px;
+  margin-left: 10px;
+  color: rgba(0, 0, 0, 0.88);
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 171.429% */
+}
+.accountDes{
+  color: rgba(0, 0, 0, 0.65);
+  font-family: Roboto;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 240% */
+  margin-left: 10px;
+}
+.accountWrapper{
+  display: flex;
+}
+.arrow{
+  width: 30px;
+  height: 30px;
+  margin: 20px;
+  margin-top: 33px;
+  cursor: pointer;
+}
+.dropdown{
+  border: none;
+}
+.logoutButton{
+  background-color: #4A628A;
+  color: #fff;
+  font-family: Roboto;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
